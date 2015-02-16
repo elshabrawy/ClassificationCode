@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<script>
+		function g() {
+			alert("Wrong ??!!");
+		}
+		function start() {
+			PF('dlg3').show();
+		}
+
+		function stop() {
+			PF('dlg3').hide();
+		}
+	</script>
+</h:head>
+<h:body>
+	<h:form>
+
+		<div class="centerContent	myBackground">
+			<p:graphicImage style="" value="loading_lglogo.png" />
+		</div>
+		<p:layout style="width:100%; height:100%;">
+			<p:layoutUnit position="west" resizable="true" size="150">
+				<p:commandButton id="CodeVersion" value="Code Version"
+					process="@this" style="width:140px;text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.codeVersion}">
+				</p:commandButton>
+				<p:commandButton id="Static" value="Static Tool" process="@this"
+					style="width:140px;text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.staticTool}">
+
+				</p:commandButton>
+				<p:commandButton id="Supplier" value="Supplier Tool" process="@this"
+					style="width:140px;text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.supplierTool}">
+
+				</p:commandButton>
+				<p:commandButton id="Dynamic" value="Dynamic Tool" process="@this"
+					style="width:140px; text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.dynamicTool}">
+
+				</p:commandButton>
+				<p:commandButton id="Error" value="Error Tool" process="@this"
+					style="width:140px; text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.errorTool}">
+
+				</p:commandButton>
+				<p:commandButton id="Exception" value="Exception Tool"
+					process="@this" style="width:140px; text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.exceptionTool}">
+
+				</p:commandButton>
+				<p:commandButton id="Truth" value="Truth Tool" process="@this"
+					style="width:140px; text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.truthTool}">
+
+				</p:commandButton>
+				<p:commandButton id="Statistics" value="Statistics Tool"
+					process="@this" style="width:140px; text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.statisticsTool}">
+
+				</p:commandButton>
+
+			</p:layoutUnit>
+
+			<p:layoutUnit style="height:250px;  width:500% " position="center">
+			<div style="align-content: center;	margin: 0 auto 0 auto;">
+				<h:panelGrid style="align-content: center;	margin: 0 auto 0 auto;"
+					columns="2">
+
+					<h:panelGrid columns="2"
+						style="text-align: center;border-width: 5px;">   
+                                            Code Name:
+                          <h:selectOneMenu id="codeN"
+							disabled="#{mainWindowBean.showClassId}"
+							value="#{mainWindowBean.codeName}">
+
+							<f:selectItems value="#{mainWindowBean.codeNames}" />
+
+							<f:ajax event="change" execute="@this" render="codeV" />
+						</h:selectOneMenu>
+					</h:panelGrid>
+					<h:panelGrid columns="2"
+						style="text-align: center;border-width: 5px; ">   
+                                            Code Version:
+                                            <h:selectOneMenu id="codeV"
+							disabled="#{mainWindowBean.showClassId}"
+							value="#{mainWindowBean.codeVer}">
+							<f:ajax />
+							<f:selectItems value="#{mainWindowBean.codeVers}" />
+						</h:selectOneMenu>
+					</h:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid cellpadding="2"
+					style="align-content: center;	margin: 0 auto 0 auto;">
+					<h:panelGrid id="display2"
+						style="align-content: center;	margin: 0 auto 0 auto;">
+						<p:fileUpload
+							fileUploadListener="#{mainWindowBean.handleFileUpload}"
+							process="@this" style="width: 500px;text-align: center; "
+							skinSimple="true" required="true" showButtons="false"
+							auto="false" sizeLimit="100000000"
+							allowTypes="/(\.|\/)(gif|jpe?g|png|txt)$/" />
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGrid>
+					<h:panelGrid columns="2"
+						style="align-content: center;	margin: 0 auto 0 auto;">   
+                                            Select Function
+                        <h:selectOneMenu id="Radio1"
+							value="#{mainWindowBean.function}" update="@form">
+							<f:ajax />
+							<f:selectItems value="#{mainWindowBean.functions}" />
+							<f:ajax event="change" execute="@this" render="@form" />
+						</h:selectOneMenu>
+					</h:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid columns="2"
+					style="align-content: center;	margin: 0 auto 0 auto;">
+					<p:commandButton id="ExecuteButton" value="Execute" process="@this"
+						actionListener="#{mainWindowBean.performAction}"
+						style=" text-align: center; " onclick="start(), stop()">
+						<p:fileDownload value="#{mainWindowBean.outputFile}" />
+					</p:commandButton>
+					<p:commandButton id="downloadLink" value="Download" process="@this"
+						style="text-align: center; " ajax="false"
+						actionListener="#{mainWindowBean.downloadController}"
+						onclick="start(), stop()">
+						<p:fileDownload value="#{mainWindowBean.outputFile}" />
+					</p:commandButton>
+
+					<p:dialog header="Effects" widgetVar="dlg3" showEffect="explode"
+						hideEffect="explode" modal="true" showHeader="false"
+						resizable="false" height="70">
+						<p:graphicImage value="loading.gif" />
+					</p:dialog>
+				</h:panelGrid>
+				</div>
+			</p:layoutUnit>
+
+		</p:layout>
+	</h:form>
+</h:body>
+</html>

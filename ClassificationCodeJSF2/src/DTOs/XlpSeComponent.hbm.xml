@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.XlpSeComponent" table="XLP_SE_COMPONENT" schema="CM">
+        <id name="comId" type="long">
+            <column name="COM_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="tblMapFam" class="DTOs.TblMapFam" fetch="select">
+            <column name="FAM_ID" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="tblMapGen" class="DTOs.TblMapGen" fetch="select">
+            <column name="GEN_ID" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="xlpSeManufacturerByOrgManId" class="DTOs.XlpSeManufacturer" fetch="select">
+            <column name="ORG_MAN_ID" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="xlpSeManufacturerByManId" class="DTOs.XlpSeManufacturer" fetch="select">
+            <column name="MAN_ID" precision="10" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="xlpSePl" class="DTOs.XlpSePl" fetch="select">
+            <column name="PL_ID" precision="10" scale="0" not-null="true" />
+        </many-to-one>
+        <many-to-one name="xlpSeFamily" class="DTOs.XlpSeFamily" fetch="select">
+            <column name="FAMILY_ID" precision="22" scale="0" />
+        </many-to-one>
+        <many-to-one name="messageAdmin" class="DTOs.MessageAdmin" fetch="select">
+            <column name="MESSAGE_FLAG" precision="22" scale="0" />
+        </many-to-one>
+        <property name="comPartnum" type="string">
+            <column name="COM_PARTNUM" length="256" not-null="true" />
+        </property>
+        <property name="comDesc" type="string">
+            <column name="COM_DESC" length="256" not-null="true" />
+        </property>
+        <property name="comReleaseDate" type="java.lang.Long">
+            <column name="COM_RELEASE_DATE" precision="15" scale="0" />
+        </property>
+        <property name="comLastupdateDate" type="long">
+            <column name="COM_LASTUPDATE_DATE" precision="15" scale="0" not-null="true" />
+        </property>
+        <property name="nanPartnum" type="string">
+            <column name="NAN_PARTNUM" length="256" />
+        </property>
+        <property name="pkgId" type="big_decimal">
+            <column name="PKG_ID" precision="22" scale="0" />
+        </property>
+        <property name="pdfId" type="big_decimal">
+            <column name="PDF_ID" precision="22" scale="0" />
+        </property>
+        <property name="lcState" type="string">
+            <column name="LC_STATE" length="32" />
+        </property>
+        <property name="rohs" type="string">
+            <column name="ROHS" length="32" />
+        </property>
+        <property name="lcDate" type="string">
+            <column name="LC_DATE" length="16" />
+        </property>
+        <property name="poKey" type="string">
+            <column name="PO_KEY" length="256" />
+        </property>
+        <property name="militaryFlag" type="big_decimal">
+            <column name="MILITARY_FLAG" precision="22" scale="0" />
+        </property>
+        <set name="dynamicFlats" inverse="true">
+            <key>
+                <column name="COM_ID" precision="10" scale="0" not-null="true" unique="true" />
+            </key>
+            <one-to-many class="DTOs.DynamicFlat" />
+        </set>
+    </class>
+</hibernate-mapping>

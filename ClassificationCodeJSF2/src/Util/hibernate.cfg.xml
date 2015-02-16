@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.OracleDialect</property>
+    <property name="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</property>
+   <property name="hibernate.connection.url">jdbc:oracle:thin:@develop-test:1521:xlp</property>
+    <property name="hibernate.connection.username">cm</property>
+    <property name="hibernate.connection.password">cmpwd</property>
+    <property name= "javax.persistence.validation.mode" >none</property>
+    <!-- connection pool settings -->
+		<property name="c3p0.min_size">2</property>
+		<property name="c3p0.initialPoolSize">3</property>
+		<property name="c3p0.max_size">30</property>
+		<property name="c3p0.acquire_increment">3</property>
+
+		<property name="c3p0.idle_test_period">7200</property>
+		<property name="c3p0.preferredTestQuery">SELECT 1 from dual</property>
+
+		<!-- Attempts c3p0 will try to get conn into pool -->
+		<property name="c3p0.acquireRetryAttempts">10</property>
+		<property name="c3p0.acquireRetryDelay">2000</property>
+
+		<!-- MS time the client will wait for a connection if the pool is full -->
+		<property name="c3p0.checkoutTimeout">60000</property>
+
+		<!-- sec to wait before killing a conn -->
+	 	<property name="c3p0.unreturnedConnectionTimeout">10800</property>
+		<property name="c3p0.debugUnreturnedConnectionStackTraces">true</property>
+		<property name="c3p0.max_statements">0</property>
+		<property name="c3p0.numHelperThreads">5</property> 
+	<!-- connection pool settings -->	
+    <property name="show_sql">true</property>
+    <mapping resource="DTOs/XlpSeTaxonomy.hbm.xml"/>
+    <mapping resource="DTOs/MessageAdmin.hbm.xml"/>
+    <mapping resource="DTOs/TblQchApprovedValues.hbm.xml"/>
+    <mapping resource="DTOs/XlpSeManufacturer.hbm.xml"/>
+    <mapping resource="DTOs/TblMapFam.hbm.xml"/>
+    <mapping resource="DTOs/ClassRol.hbm.xml"/>
+    <mapping resource="DTOs/XlpSeParenthier.hbm.xml"/>
+    <mapping resource="DTOs/XlpSeFamily.hbm.xml"/>
+    <mapping resource="DTOs/DynamicFlat.hbm.xml"/>
+    <mapping resource="DTOs/XlpSeComponent.hbm.xml"/>
+    <mapping resource="DTOs/XlpSePl.hbm.xml"/>
+    <mapping resource="DTOs/XlpSeFeature.hbm.xml"/>
+    <mapping resource="DTOs/ShFeature.hbm.xml"/>
+    <mapping resource="DTOs/TblMapGen.hbm.xml"/>
+  
+  </session-factory>
+</hibernate-configuration>

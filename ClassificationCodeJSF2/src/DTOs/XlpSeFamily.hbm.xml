@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.XlpSeFamily" table="XLP_SE_FAMILY" schema="CM">
+        <id name="seriesId" type="big_decimal">
+            <column name="SERIES_ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="seriesName" type="string">
+            <column name="SERIES_NAME" length="128" />
+        </property>
+        <property name="manId" type="big_decimal">
+            <column name="MAN_ID" precision="22" scale="0" />
+        </property>
+        <property name="processingDate" type="string">
+            <column name="PROCESSING_DATE" length="200" />
+        </property>
+        <set name="xlpSeComponents" inverse="true">
+            <key>
+                <column name="FAMILY_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="DTOs.XlpSeComponent" />
+        </set>
+    </class>
+</hibernate-mapping>

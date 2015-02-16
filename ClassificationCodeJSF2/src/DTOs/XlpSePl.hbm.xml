@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.XlpSePl" table="XLP_SE_PL" schema="CM">
+        <id name="plId" type="long">
+            <column name="PL_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="xlpSeTaxonomy" class="DTOs.XlpSeTaxonomy" fetch="select">
+            <column name="TAX_ID" precision="10" scale="0" />
+        </many-to-one>
+        <property name="plName" type="string">
+            <column name="PL_NAME" length="128" not-null="true" />
+        </property>
+        <property name="plType" type="boolean">
+            <column name="PL_TYPE" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="plCreationDate" type="long">
+            <column name="PL_CREATION_DATE" precision="15" scale="0" not-null="true" />
+        </property>
+        <property name="crossFlag" type="string">
+            <column name="CROSS_FLAG" length="8" />
+        </property>
+        <property name="isBatt" type="string">
+            <column name="IS_BATT" length="64" />
+        </property>
+        <set name="xlpSeComponents" inverse="true">
+            <key>
+                <column name="PL_ID" precision="10" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="DTOs.XlpSeComponent" />
+        </set>
+        <set name="tblQchApprovedValueses" inverse="true">
+            <key>
+                <column name="PL_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="DTOs.TblQchApprovedValues" />
+        </set>
+        <set name="xlpSeFeatures" inverse="true">
+            <key>
+                <column name="PL_ID" precision="10" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="DTOs.XlpSeFeature" />
+        </set>
+        <set name="xlpSeParenthiers" inverse="true">
+            <key>
+                <column name="PL_ID" precision="10" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="DTOs.XlpSeParenthier" />
+        </set>
+    </class>
+</hibernate-mapping>

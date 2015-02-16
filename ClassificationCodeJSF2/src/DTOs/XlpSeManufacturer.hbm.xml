@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.XlpSeManufacturer" table="XLP_SE_MANUFACTURER" schema="CM">
+        <id name="manId" type="long">
+            <column name="MAN_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="manName" type="string">
+            <column name="MAN_NAME" length="128" not-null="true" unique="true" />
+        </property>
+        <property name="manCode" type="string">
+            <column name="MAN_CODE" length="10" not-null="true" />
+        </property>
+        <property name="manSiteUrl" type="string">
+            <column name="MAN_SITE_URL" length="512" />
+        </property>
+        <property name="manLogoUrl" type="string">
+            <column name="MAN_LOGO_URL" length="512" />
+        </property>
+        <property name="manComment" type="string">
+            <column name="MAN_COMMENT" length="1024" />
+        </property>
+        <property name="contact" type="string">
+            <column name="CONTACT" length="512" />
+        </property>
+        <property name="roadmapUrl" type="string">
+            <column name="ROADMAP_URL" length="1024" />
+        </property>
+        <property name="chemicalUrl" type="string">
+            <column name="CHEMICAL_URL" length="1024" />
+        </property>
+        <property name="packageUrl" type="string">
+            <column name="PACKAGE_URL" length="1024" />
+        </property>
+        <property name="chineese" type="java.lang.Boolean">
+            <column name="CHINEESE" precision="1" scale="0" />
+        </property>
+        <property name="key" type="java.lang.Boolean">
+            <column name="KEY" precision="1" scale="0" />
+        </property>
+        <set name="xlpSeComponentsForManId" inverse="true">
+            <key>
+                <column name="MAN_ID" precision="10" scale="0" not-null="true" />
+            </key>
+            <one-to-many class="DTOs.XlpSeComponent" />
+        </set>
+        <set name="xlpSeComponentsForOrgManId" inverse="true">
+            <key>
+                <column name="ORG_MAN_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="DTOs.XlpSeComponent" />
+        </set>
+    </class>
+</hibernate-mapping>

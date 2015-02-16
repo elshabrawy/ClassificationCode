@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.ClassRol" table="CLASS_ROL" schema="CM">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="seProductLine" type="string">
+            <column name="SE_PRODUCT_LINE" length="256" />
+        </property>
+        <property name="className" type="string">
+            <column name="CLASS_NAME" length="256" />
+        </property>
+        <property name="codeVersion" type="string">
+            <column name="CODE_VERSION" length="256" />
+        </property>
+        <property name="codeDescription" type="string">
+            <column name="CODE_DESCRIPTION" length="4000" />
+        </property>
+        <property name="refUrl" type="string">
+            <column name="REF_URL" length="500" />
+        </property>
+        <property name="executionOrder" type="big_decimal">
+            <column name="EXECUTION_ORDER" precision="22" scale="0" />
+        </property>
+        <property name="code" type="string">
+            <column name="CODE" length="256" />
+        </property>
+        <property name="seParametersName1" type="string">
+            <column name="SE_PARAMETERS_NAME_1" length="256" />
+        </property>
+        <property name="startCond1" type="string">
+            <column name="START_COND_1" length="256" />
+        </property>
+        <property name="startValue1" type="string">
+            <column name="START_VALUE_1" length="4000" />
+        </property>
+        <property name="startMultiplier1" type="string">
+            <column name="START_MULTIPLIER_1" length="256" />
+        </property>
+        <property name="startUnit1" type="string">
+            <column name="START_UNIT_1" length="256" />
+        </property>
+        <property name="endCond1" type="string">
+            <column name="END_COND_1" length="256" />
+        </property>
+        <property name="endValue1" type="string">
+            <column name="END_VALUE_1" length="4000" />
+        </property>
+        <property name="endMultiplier1" type="string">
+            <column name="END_MULTIPLIER_1" length="256" />
+        </property>
+        <property name="endUnit1" type="string">
+            <column name="END_UNIT_1" length="256" />
+        </property>
+        <property name="seParametersName2" type="string">
+            <column name="SE_PARAMETERS_NAME_2" length="256" />
+        </property>
+        <property name="startCond2" type="string">
+            <column name="START_COND_2" length="256" />
+        </property>
+        <property name="startValue2" type="string">
+            <column name="START_VALUE_2" length="4000" />
+        </property>
+        <property name="startMultiplier2" type="string">
+            <column name="START_MULTIPLIER_2" length="256" />
+        </property>
+        <property name="startUnit2" type="string">
+            <column name="START_UNIT_2" length="256" />
+        </property>
+        <property name="endCond2" type="string">
+            <column name="END_COND_2" length="256" />
+        </property>
+        <property name="endValue2" type="string">
+            <column name="END_VALUE_2" length="4000" />
+        </property>
+        <property name="endMultiplier2" type="string">
+            <column name="END_MULTIPLIER_2" length="256" />
+        </property>
+        <property name="endUnit2" type="string">
+            <column name="END_UNIT_2" length="256" />
+        </property>
+        <property name="seParametersName3" type="string">
+            <column name="SE_PARAMETERS_NAME_3" length="256" />
+        </property>
+        <property name="startCond3" type="string">
+            <column name="START_COND_3" length="256" />
+        </property>
+        <property name="startValue3" type="string">
+            <column name="START_VALUE_3" length="4000" />
+        </property>
+        <property name="startMultiplier3" type="string">
+            <column name="START_MULTIPLIER_3" length="256" />
+        </property>
+        <property name="startUnit3" type="string">
+            <column name="START_UNIT_3" length="256" />
+        </property>
+        <property name="endCond3" type="string">
+            <column name="END_COND_3" length="256" />
+        </property>
+        <property name="endValue3" type="string">
+            <column name="END_VALUE_3" length="4000" />
+        </property>
+        <property name="endMultiplier3" type="string">
+            <column name="END_MULTIPLIER_3" length="256" />
+        </property>
+        <property name="endUnit3" type="string">
+            <column name="END_UNIT_3" length="256" />
+        </property>
+        <property name="seParametersName4" type="string">
+            <column name="SE_PARAMETERS_NAME_4" length="256" />
+        </property>
+        <property name="startCond4" type="string">
+            <column name="START_COND_4" length="256" />
+        </property>
+        <property name="startValue4" type="string">
+            <column name="START_VALUE_4" length="4000" />
+        </property>
+        <property name="startMultiplier4" type="string">
+            <column name="START_MULTIPLIER_4" length="256" />
+        </property>
+        <property name="startUnit4" type="string">
+            <column name="START_UNIT_4" length="256" />
+        </property>
+        <property name="endCond4" type="string">
+            <column name="END_COND_4" length="256" />
+        </property>
+        <property name="endValue4" type="string">
+            <column name="END_VALUE_4" length="4000" />
+        </property>
+        <property name="endMultiplier4" type="string">
+            <column name="END_MULTIPLIER_4" length="256" />
+        </property>
+        <property name="endUnit4" type="string">
+            <column name="END_UNIT_4" length="256" />
+        </property>
+        <property name="seParametersName5" type="string">
+            <column name="SE_PARAMETERS_NAME_5" length="256" />
+        </property>
+        <property name="startCond5" type="string">
+            <column name="START_COND_5" length="256" />
+        </property>
+        <property name="startValue5" type="string">
+            <column name="START_VALUE_5" length="4000" />
+        </property>
+        <property name="startMultiplier5" type="string">
+            <column name="START_MULTIPLIER_5" length="256" />
+        </property>
+        <property name="startUnit5" type="string">
+            <column name="START_UNIT_5" length="256" />
+        </property>
+        <property name="endCond5" type="string">
+            <column name="END_COND_5" length="256" />
+        </property>
+        <property name="endValue5" type="string">
+            <column name="END_VALUE_5" length="4000" />
+        </property>
+        <property name="endMultiplier5" type="string">
+            <column name="END_MULTIPLIER_5" length="256" />
+        </property>
+        <property name="endUnit5" type="string">
+            <column name="END_UNIT_5" length="256" />
+        </property>
+        <property name="featureId1" type="big_decimal">
+            <column name="FEATURE_ID_1" precision="22" scale="0" />
+        </property>
+        <property name="featureId2" type="big_decimal">
+            <column name="FEATURE_ID_2" precision="22" scale="0" />
+        </property>
+        <property name="featureId3" type="big_decimal">
+            <column name="FEATURE_ID_3" precision="22" scale="0" />
+        </property>
+        <property name="featureId4" type="big_decimal">
+            <column name="FEATURE_ID_4" precision="22" scale="0" />
+        </property>
+        <property name="featureId5" type="big_decimal">
+            <column name="FEATURE_ID_5" precision="22" scale="0" />
+        </property>
+        <property name="plId" type="big_decimal">
+            <column name="PL_ID" precision="22" scale="0" />
+        </property>
+        <property name="clasId" type="big_decimal">
+            <column name="CLAS_ID" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.TblMapGen" table="TBL_MAP_GEN" schema="CM">
+        <id name="genId" type="big_decimal">
+            <column name="GEN_ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="generic" type="string">
+            <column name="GENERIC" length="100" not-null="true" />
+        </property>
+        <set name="xlpSeComponents" inverse="true">
+            <key>
+                <column name="GEN_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="DTOs.XlpSeComponent" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.XlpSeFeature" table="XLP_SE_FEATURE" schema="CM">
+        <id name="fetId" type="long">
+            <column name="FET_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="xlpSeParenthier" class="DTOs.XlpSeParenthier" fetch="select">
+            <column name="PHR_ID" precision="10" scale="0" />
+        </many-to-one>
+        <many-to-one name="xlpSePl" class="DTOs.XlpSePl" fetch="select">
+            <column name="PL_ID" precision="10" scale="0" not-null="true" />
+        </many-to-one>
+        <property name="fetName" type="string">
+            <column name="FET_NAME" length="256" not-null="true" />
+        </property>
+        <property name="fetType" type="java.lang.Boolean">
+            <column name="FET_TYPE" precision="1" scale="0" />
+        </property>
+        <property name="fetLength" type="string">
+            <column name="FET_LENGTH" length="10" not-null="true" />
+        </property>
+        <property name="fetSearchableFlag" type="boolean">
+            <column name="FET_SEARCHABLE_FLAG" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="fetSort" type="string">
+            <column name="FET_SORT" length="1024" />
+        </property>
+        <property name="fetPresentation" type="string">
+            <column name="FET_PRESENTATION" length="3" />
+        </property>
+        <property name="fetPhierlocalorder" type="java.lang.Short">
+            <column name="FET_PHIERLOCALORDER" precision="3" scale="0" />
+        </property>
+        <property name="fetExpertsheetorder" type="short">
+            <column name="FET_EXPERTSHEETORDER" precision="3" scale="0" not-null="true" />
+        </property>
+        <property name="fetUnit" type="string">
+            <column name="FET_UNIT" length="256" />
+        </property>
+        <property name="fetSheetviewFlag" type="boolean">
+            <column name="FET_SHEETVIEW_FLAG" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="fetCoreId" type="java.lang.Long">
+            <column name="FET_CORE_ID" precision="10" scale="0" />
+        </property>
+        <property name="fetMv" type="boolean">
+            <column name="FET_MV" precision="1" scale="0" not-null="true" />
+        </property>
+        <property name="colNm" type="string">
+            <column name="COL_NM" length="30" />
+        </property>
+        <property name="sortType" type="string">
+            <column name="SORT_TYPE" length="30" />
+        </property>
+        <property name="additionalfetFlg" type="big_decimal">
+            <column name="ADDITIONALFET_FLG" precision="22" scale="0" />
+        </property>
+        <property name="columnfetFlg" type="big_decimal">
+            <column name="COLUMNFET_FLG" precision="22" scale="0" />
+        </property>
+        <property name="featureSymbol" type="string">
+            <column name="FEATURE_SYMBOL" length="50" />
+        </property>
+        <property name="featureDefinition" type="string">
+            <column name="FEATURE_DEFINITION" length="1024" />
+        </property>
+        <property name="pkgFlag" type="boolean">
+            <column name="PKG_FLAG" precision="1" scale="0" not-null="true" />
+        </property>
+        <set name="tblQchApprovedValueses" inverse="true">
+            <key>
+                <column name="FET_ID" precision="22" scale="0" />
+            </key>
+            <one-to-many class="DTOs.TblQchApprovedValues" />
+        </set>
+    </class>
+</hibernate-mapping>

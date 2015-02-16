@@ -1,0 +1,276 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.DynamicFlat" table="DYNAMIC_FLAT" schema="CM">
+        <id name="comId" type="long">
+            <column name="COM_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="xlpSeComponent" class="DTOs.XlpSeComponent" update="false" insert="false" fetch="select">
+            <column name="COM_ID" precision="10" scale="0" not-null="true" unique="true" />
+        </many-to-one>
+        <property name="manId" type="long">
+            <column name="MAN_ID" precision="10" scale="0" not-null="true" />
+        </property>
+        <property name="plId" type="long">
+            <column name="PL_ID" precision="10" scale="0" not-null="true" />
+        </property>
+        <property name="fet1" type="java.lang.Long">
+            <column name="FET_1" precision="10" scale="0" />
+        </property>
+        <property name="fet2" type="java.lang.Long">
+            <column name="FET_2" precision="10" scale="0" />
+        </property>
+        <property name="fet3" type="java.lang.Long">
+            <column name="FET_3" precision="10" scale="0" />
+        </property>
+        <property name="fet4" type="java.lang.Long">
+            <column name="FET_4" precision="10" scale="0" />
+        </property>
+        <property name="fet5" type="java.lang.Long">
+            <column name="FET_5" precision="10" scale="0" />
+        </property>
+        <property name="fet6" type="java.lang.Long">
+            <column name="FET_6" precision="10" scale="0" />
+        </property>
+        <property name="fet7" type="java.lang.Long">
+            <column name="FET_7" precision="10" scale="0" />
+        </property>
+        <property name="fet8" type="java.lang.Long">
+            <column name="FET_8" precision="10" scale="0" />
+        </property>
+        <property name="fet9" type="java.lang.Long">
+            <column name="FET_9" precision="10" scale="0" />
+        </property>
+        <property name="fet10" type="java.lang.Long">
+            <column name="FET_10" precision="10" scale="0" />
+        </property>
+        <property name="fet11" type="java.lang.Long">
+            <column name="FET_11" precision="10" scale="0" />
+        </property>
+        <property name="fet12" type="java.lang.Long">
+            <column name="FET_12" precision="10" scale="0" />
+        </property>
+        <property name="fet13" type="java.lang.Long">
+            <column name="FET_13" precision="10" scale="0" />
+        </property>
+        <property name="fet14" type="java.lang.Long">
+            <column name="FET_14" precision="10" scale="0" />
+        </property>
+        <property name="fet15" type="java.lang.Long">
+            <column name="FET_15" precision="10" scale="0" />
+        </property>
+        <property name="fet16" type="java.lang.Long">
+            <column name="FET_16" precision="10" scale="0" />
+        </property>
+        <property name="fet17" type="java.lang.Long">
+            <column name="FET_17" precision="10" scale="0" />
+        </property>
+        <property name="fet18" type="java.lang.Long">
+            <column name="FET_18" precision="10" scale="0" />
+        </property>
+        <property name="fet19" type="java.lang.Long">
+            <column name="FET_19" precision="10" scale="0" />
+        </property>
+        <property name="fet20" type="java.lang.Long">
+            <column name="FET_20" precision="10" scale="0" />
+        </property>
+        <property name="fet21" type="java.lang.Long">
+            <column name="FET_21" precision="10" scale="0" />
+        </property>
+        <property name="fet22" type="java.lang.Long">
+            <column name="FET_22" precision="10" scale="0" />
+        </property>
+        <property name="fet23" type="java.lang.Long">
+            <column name="FET_23" precision="10" scale="0" />
+        </property>
+        <property name="fet24" type="java.lang.Long">
+            <column name="FET_24" precision="10" scale="0" />
+        </property>
+        <property name="fet25" type="java.lang.Long">
+            <column name="FET_25" precision="10" scale="0" />
+        </property>
+        <property name="fet26" type="java.lang.Long">
+            <column name="FET_26" precision="10" scale="0" />
+        </property>
+        <property name="fet27" type="java.lang.Long">
+            <column name="FET_27" precision="10" scale="0" />
+        </property>
+        <property name="fet28" type="java.lang.Long">
+            <column name="FET_28" precision="10" scale="0" />
+        </property>
+        <property name="fet29" type="java.lang.Long">
+            <column name="FET_29" precision="10" scale="0" />
+        </property>
+        <property name="fet30" type="java.lang.Long">
+            <column name="FET_30" precision="10" scale="0" />
+        </property>
+        <property name="fet31" type="java.lang.Long">
+            <column name="FET_31" precision="10" scale="0" />
+        </property>
+        <property name="fet32" type="java.lang.Long">
+            <column name="FET_32" precision="10" scale="0" />
+        </property>
+        <property name="fet33" type="java.lang.Long">
+            <column name="FET_33" precision="10" scale="0" />
+        </property>
+        <property name="fet34" type="java.lang.Long">
+            <column name="FET_34" precision="10" scale="0" />
+        </property>
+        <property name="fet35" type="java.lang.Long">
+            <column name="FET_35" precision="10" scale="0" />
+        </property>
+        <property name="fet36" type="java.lang.Long">
+            <column name="FET_36" precision="10" scale="0" />
+        </property>
+        <property name="fet37" type="java.lang.Long">
+            <column name="FET_37" precision="10" scale="0" />
+        </property>
+        <property name="fet38" type="java.lang.Long">
+            <column name="FET_38" precision="10" scale="0" />
+        </property>
+        <property name="fet39" type="java.lang.Long">
+            <column name="FET_39" precision="10" scale="0" />
+        </property>
+        <property name="fet40" type="java.lang.Long">
+            <column name="FET_40" precision="10" scale="0" />
+        </property>
+        <property name="fet41" type="java.lang.Long">
+            <column name="FET_41" precision="10" scale="0" />
+        </property>
+        <property name="fet42" type="java.lang.Long">
+            <column name="FET_42" precision="10" scale="0" />
+        </property>
+        <property name="fet43" type="java.lang.Long">
+            <column name="FET_43" precision="10" scale="0" />
+        </property>
+        <property name="fet44" type="java.lang.Long">
+            <column name="FET_44" precision="10" scale="0" />
+        </property>
+        <property name="fet45" type="java.lang.Long">
+            <column name="FET_45" precision="10" scale="0" />
+        </property>
+        <property name="fet46" type="java.lang.Long">
+            <column name="FET_46" precision="10" scale="0" />
+        </property>
+        <property name="fet47" type="java.lang.Long">
+            <column name="FET_47" precision="10" scale="0" />
+        </property>
+        <property name="fet48" type="java.lang.Long">
+            <column name="FET_48" precision="10" scale="0" />
+        </property>
+        <property name="fet49" type="java.lang.Long">
+            <column name="FET_49" precision="10" scale="0" />
+        </property>
+        <property name="fet50" type="java.lang.Long">
+            <column name="FET_50" precision="10" scale="0" />
+        </property>
+        <property name="fet51" type="java.lang.Long">
+            <column name="FET_51" precision="10" scale="0" />
+        </property>
+        <property name="fet52" type="java.lang.Long">
+            <column name="FET_52" precision="10" scale="0" />
+        </property>
+        <property name="fet53" type="java.lang.Long">
+            <column name="FET_53" precision="10" scale="0" />
+        </property>
+        <property name="fet54" type="java.lang.Long">
+            <column name="FET_54" precision="10" scale="0" />
+        </property>
+        <property name="fet55" type="java.lang.Long">
+            <column name="FET_55" precision="10" scale="0" />
+        </property>
+        <property name="fet56" type="java.lang.Long">
+            <column name="FET_56" precision="10" scale="0" />
+        </property>
+        <property name="fet57" type="java.lang.Long">
+            <column name="FET_57" precision="10" scale="0" />
+        </property>
+        <property name="fet58" type="java.lang.Long">
+            <column name="FET_58" precision="10" scale="0" />
+        </property>
+        <property name="fet59" type="java.lang.Long">
+            <column name="FET_59" precision="10" scale="0" />
+        </property>
+        <property name="fet60" type="java.lang.Long">
+            <column name="FET_60" precision="10" scale="0" />
+        </property>
+        <property name="fet61" type="java.lang.Long">
+            <column name="FET_61" precision="10" scale="0" />
+        </property>
+        <property name="fet62" type="java.lang.Long">
+            <column name="FET_62" precision="10" scale="0" />
+        </property>
+        <property name="fet63" type="java.lang.Long">
+            <column name="FET_63" precision="10" scale="0" />
+        </property>
+        <property name="fet64" type="java.lang.Long">
+            <column name="FET_64" precision="10" scale="0" />
+        </property>
+        <property name="fet65" type="java.lang.Long">
+            <column name="FET_65" precision="10" scale="0" />
+        </property>
+        <property name="fet66" type="java.lang.Long">
+            <column name="FET_66" precision="10" scale="0" />
+        </property>
+        <property name="fet67" type="java.lang.Long">
+            <column name="FET_67" precision="10" scale="0" />
+        </property>
+        <property name="fet68" type="java.lang.Long">
+            <column name="FET_68" precision="10" scale="0" />
+        </property>
+        <property name="fet69" type="java.lang.Long">
+            <column name="FET_69" precision="10" scale="0" />
+        </property>
+        <property name="fet70" type="java.lang.Long">
+            <column name="FET_70" precision="10" scale="0" />
+        </property>
+        <property name="fet71" type="java.lang.Long">
+            <column name="FET_71" precision="10" scale="0" />
+        </property>
+        <property name="fet72" type="java.lang.Long">
+            <column name="FET_72" precision="10" scale="0" />
+        </property>
+        <property name="fet73" type="java.lang.Long">
+            <column name="FET_73" precision="10" scale="0" />
+        </property>
+        <property name="fet74" type="java.lang.Long">
+            <column name="FET_74" precision="10" scale="0" />
+        </property>
+        <property name="fet75" type="java.lang.Long">
+            <column name="FET_75" precision="10" scale="0" />
+        </property>
+        <property name="fet76" type="java.lang.Long">
+            <column name="FET_76" precision="10" scale="0" />
+        </property>
+        <property name="fet77" type="java.lang.Long">
+            <column name="FET_77" precision="10" scale="0" />
+        </property>
+        <property name="fet78" type="java.lang.Long">
+            <column name="FET_78" precision="10" scale="0" />
+        </property>
+        <property name="fet79" type="java.lang.Long">
+            <column name="FET_79" precision="10" scale="0" />
+        </property>
+        <property name="fet80" type="java.lang.Long">
+            <column name="FET_80" precision="10" scale="0" />
+        </property>
+        <property name="fet81" type="java.lang.Long">
+            <column name="FET_81" precision="10" scale="0" />
+        </property>
+        <property name="fet82" type="java.lang.Long">
+            <column name="FET_82" precision="10" scale="0" />
+        </property>
+        <property name="fet83" type="java.lang.Long">
+            <column name="FET_83" precision="10" scale="0" />
+        </property>
+        <property name="fet84" type="java.lang.Long">
+            <column name="FET_84" precision="10" scale="0" />
+        </property>
+        <property name="suppPlId" type="big_decimal">
+            <column name="SUPP_PL_ID" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

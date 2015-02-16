@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 19, 2012 2:52:28 PM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.MultiplierRol" table="MULTIPLIER_ROL" schema="cm">
+        <id name="id" type="big_decimal">
+            <column name="ID" precision="22" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="multiplier" type="string">
+            <column name="MULTIPLIER" length="256" />
+        </property>
+        <property name="unit" type="string">
+            <column name="UNIT" length="256" />
+        </property>
+        <property name="value" type="string">
+            <column name="VALUE" length="256" />
+        </property>
+         <property name="type" type="string">
+            <column name="TYPE" length="256" />
+        </property>
+    </class>
+</hibernate-mapping>

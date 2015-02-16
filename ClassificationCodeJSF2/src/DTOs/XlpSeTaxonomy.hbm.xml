@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated May 29, 2012 11:19:30 AM by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="DTOs.XlpSeTaxonomy" table="XLP_SE_TAXONOMY" schema="CM">
+        <id name="taxId" type="long">
+            <column name="TAX_ID" precision="10" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="xlpSeTaxonomy" class="DTOs.XlpSeTaxonomy" fetch="select">
+            <column name="TAX_PARENT_ID" precision="10" scale="0" />
+        </many-to-one>
+        <property name="taxName" type="string">
+            <column name="TAX_NAME" length="128" not-null="true" />
+        </property>
+        <property name="taxPath" type="string">
+            <column name="TAX_PATH" length="650" not-null="true" />
+        </property>
+        <set name="xlpSePls" inverse="true">
+            <key>
+                <column name="TAX_ID" precision="10" scale="0" />
+            </key>
+            <one-to-many class="DTOs.XlpSePl" />
+        </set>
+        <set name="xlpSeTaxonomies" inverse="true">
+            <key>
+                <column name="TAX_PARENT_ID" precision="10" scale="0" />
+            </key>
+            <one-to-many class="DTOs.XlpSeTaxonomy" />
+        </set>
+    </class>
+</hibernate-mapping>
