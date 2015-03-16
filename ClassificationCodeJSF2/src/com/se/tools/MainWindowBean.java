@@ -40,7 +40,7 @@ import Util.DataBaseConnection;
 public class MainWindowBean {
 
 	private String codeName, CodeVer;
-	boolean showUpload = false, showClassId = false;
+	boolean showUpload = true, showClassId = false;
 	HashMap<String, ArrayList<String[]>> codesMap = new HashMap<String, ArrayList<String[]>>();
 	String currentEnabl = "";
 	private ArrayList<String> codeNames, codeVers;
@@ -48,11 +48,11 @@ public class MainWindowBean {
 	private ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 	private String function;
 	private ArrayList<String> functions;
-	ToolBean tool = null;
+	ToolBean tool = new SupplierTool();;
 	private UploadedFile file;
-	private static StreamedContent outputFile;
+	private StreamedContent outputFile;
 
-	private File logFile;
+	private File logFile = new File("d:\\FilesTemp\\ClassificationTools\\Log.txt");;
 
 	public MainWindowBean() {
 		codeNames = new ArrayList<String>();
@@ -60,22 +60,36 @@ public class MainWindowBean {
 		codeVers = new ArrayList<String>();
 		codeVers.add("Code Version");
 		getCodeNameAndVersion();
+		tool.setFunction("Update by PN & Supplier");
+		this.setFunctions(tool.getFunctions());
 
 	}
 
 	public void performAction(ActionEvent actionEvent) {
 		int classId = getClassId(this.getCodeName(), this.getCodeVer());
-		System.out.println("action here");
-		File logFile = new File("d:\\FilesTemp\\ClassificationTools\\Log.txt");
-		logFile.delete();
-		readFile();
-		String outputMessage = tool.performAction(this.getList(),
-				this.getFunction(), classId);
 
+		System.out.println("action here");
+		
+		boolean flag = isShowClassId();
+		String outputMessage = "";
+		if (isShowClassId()
+				&& (this.getCodeName() == null || this.getCodeName() == null)) {
+			outputMessage = "Please Select Code Name And Code Version";
+		} else {
+			if (isShowUpload()) {
+				outputMessage = readFile();
+				if (outputMessage.equals("Done")) {
+					outputMessage = tool.performAction(this.getList(),
+							this.getFunction(), classId);
+				}
+			}
+
+		}
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 				outputMessage);
 
 		RequestContext.getCurrentInstance().showMessageInDialog(message);
+
 	}
 
 	private int getClassId(String codeName, String codeVer) {
@@ -115,44 +129,71 @@ public class MainWindowBean {
 	public void codeVersion(ActionEvent event) {
 
 		this.setToolName("Code Version");
-
+		this.setFunction("Import by PL & Code Name & Code Version");
+		clearData();
 	}
+
 	public void dynamicTool(ActionEvent event) {
 
 		this.setToolName("Dynamic Tool");
-
+		this.setFunction("Import by PL & Code Name & Code Version");
+		clearData();
 	}
+
 	public void supplierTool(ActionEvent event) {
 
 		this.setToolName("Supplier Tool");
-
+		this.setFunction("Update by PN & Supplier");
+		clearData();
 	}
+
 	public void staticTool(ActionEvent event) {
 
 		this.setToolName("Static Tool");
-
+		this.setFunction("Update by PN & Supplier");
+		clearData();
 	}
+
 	public void errorTool(ActionEvent event) {
 
 		this.setToolName("Error Tool");
-
+		this.setFunction("Import All");
+		clearData();
 	}
+
 	public void exceptionTool(ActionEvent event) {
 
 		this.setToolName("Exception Tool");
+		this.setFunction("Update by PN & Supplier");
+		clearData();
 
 	}
+
 	public void truthTool(ActionEvent event) {
 
 		this.setToolName("Truth Tool");
+		clearData();
 
 	}
+
 	public void statisticsTool(ActionEvent event) {
 
 		this.setToolName("Statistics Tool");
+		clearData();
 
 	}
-	
+	public void clearData(){
+		this.setCodeName("Code Name");
+		this.setCodeVer("Code Version");
+		try {
+			file=null;
+			logFile.delete();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("file not found");
+		}
+	} 
 
 	public void getCodeNameAndVersion() {
 		Session session = null;
@@ -246,11 +287,16 @@ public class MainWindowBean {
 		this.setFile(event.getFile());
 	}
 
-	public void readFile() {
+	public String readFile() {
 		this.list = new ArrayList<ArrayList<String>>();
 		ArrayList<String> line = null;
 		System.out.println("start upload");
-		String name = this.getFile().getFileName();
+		String name = "";
+		try {
+			name = this.getFile().getFileName();
+		} catch (Exception e) {
+			return "Please Select Input File";
+		}
 		System.out.println("name sis " + name);
 		System.out.println(this.getFunction());
 		UploadedFile uploadFile = this.getFile();
@@ -279,7 +325,9 @@ public class MainWindowBean {
 			FacesContext.getCurrentInstance().getExternalContext()
 					.getSessionMap().put("data", this.list);
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		return "Done";
 	}
 
 	public void setList(ArrayList<ArrayList<String>> list) {
@@ -298,16 +346,34 @@ public class MainWindowBean {
 
 		if (toolName.equals("Supplier Tool")) {
 			tool = new SupplierTool();
+			tool.setFunction("Update by PN & Supplier");
+			this.setShowClassId(false);
 		} else if (toolName.equals("Dynamic Tool")) {
 			tool = new DynamicTool();
+			tool.setFunction("Update by PN & Supplier");
+			this.setShowClassId(false);
 		} else if (toolName.equals("Error Tool")) {
 			tool = new ErrorTool();
+			tool.setFunction("Update by PN & Supplier");
+			this.setShowClassId(true);
 		} else if (toolName.equals("Static Tool")) {
 			tool = new StaticTool();
+			tool.setFunction("Update by PN & Supplier");
+			this.setShowClassId(true);
 		} else if (toolName.equals("Exception Tool")) {
 			tool = new ExceptionTool();
+			tool.setFunction("Update by PN & Supplier");
+			this.setShowClassId(true);
 		}
-		this.setFunction(tool.getFunction());
+
+		try {
+			logFile.delete();
+		} catch (Exception e) {
+			System.out.println("file not found");
+		}
+		this.setCodeName("Code Name");
+		this.setCodeVer("Code Version");
+		this.setFile(null);
 		this.setFunctions(tool.getFunctions());
 		this.toolName = toolName;
 	}
@@ -319,27 +385,28 @@ public class MainWindowBean {
 	public void setFunction(String function) {
 		if (this.getToolName().equals("Supplier Tool")) {
 			if (function.equals("Update by PN & Supplier")) {
-				this.setShowClassId(true);
-
-			} else {
 				this.setShowClassId(false);
+			} else {
+				this.setShowClassId(true);
 			}
-		} else if (this.getToolName().equals("Dynamic Tool")
+		} else if (this.getToolName().equals("Exception Tool")
 				|| this.getToolName().equals("Static Tool")) {
-			this.setShowClassId(false);
+			this.setShowClassId(true);
 		} else if (this.getToolName().equals("Error Tool")) {
 			if (function.equals("Add Part to Daily")) {
-				this.setShowClassId(true);
+				this.setShowClassId(false);
 			} else if (function.equals("Import All")
 					|| function.equals("Export All")
 					|| function.equals("Delete All")) {
-				this.setShowClassId(true);
-				this.setShowUpload(true);
-			} else {
 				this.setShowClassId(false);
+				this.setShowUpload(false);
+			} else {
+				this.setShowClassId(true);
 			}
-		} else {
+		} else if (this.getToolName().equals("Dynamic Tool")) {
 			this.setShowClassId(false);
+		} else {
+			this.setShowClassId(true);
 		}
 		if (tool != null) {
 			tool.setFunction(function);
@@ -379,21 +446,27 @@ public class MainWindowBean {
 		this.showClassId = showClassId;
 	}
 
-	public static void downloadController() {
+	public void downloadController() {
+		
 		System.out.println("dowloand start");
 		InputStream stream;
 		try {
-			stream = new FileInputStream(new File("D:\\FilesTemp\\ClassificationTools\\Log.txt"));
-			 outputFile = new DefaultStreamedContent(stream,"text/plain", "LogFile.txt");
-//			setOutputFile(outputFile2);
+			stream = new FileInputStream(new File(
+					"D:\\FilesTemp\\ClassificationTools\\Log.txt"));
+			outputFile = new DefaultStreamedContent(stream, "text/plain",
+					"LogFile.txt");
+			// setOutputFile(outputFile2);
 			System.out.println("done");
 
-//			FacesContext.getCurrentInstance().responseComplete();
+		
 		} catch (FileNotFoundException e) {
-
-			e.printStackTrace();
+			String outputMessage = "No File To Download";			
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+					outputMessage);
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+//			e.printStackTrace();
 		}
-
+//		 FacesContext.getCurrentInstance().responseComplete();
 	}
 
 	public StreamedContent getOutputFile() {
@@ -411,4 +484,13 @@ public class MainWindowBean {
 	public void setLogFile(File logFile) {
 		this.logFile = logFile;
 	}
+	// public void onTabChange(TabChangeEvent evt)
+	// {
+	// FacesContext context = FacesContext.getCurrentInstance();
+	// Map<String, String> paramMap =
+	// context.getExternalContext().getRequestParameterMap();
+	// String paramIndex = paramMap.get("activeIndex");
+	// setActiveTabIndex(Integer.valueOf(paramIndex));
+	// System.out.println("Active index changed to " + evt.getTab());
+	// }
 }

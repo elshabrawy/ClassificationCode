@@ -1,6 +1,5 @@
 package com.se.classcode;
 
-
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -21,12 +20,11 @@ import DTOs.XlpSeFeature;
 import DTOs.XlpSeManufacturer;
 import DTOs.XlpSePl;
 
-
 public class Generation {
 	public static void main(String args[]) {
 		Session session = DataBaseConnection.getSession();
-//		generateRolesByPL("ATM UNI",130);
-//		generateByPl("Connector Circular", 170, null, "10.0.1.48", session);
+		// generateRolesByPL("ATM UNI",130);
+		// generateByPl("Connector Circular", 170, null, "10.0.1.48", session);
 		session.close();
 	}
 
@@ -1503,56 +1501,60 @@ public class Generation {
 		}
 		return features;
 	}
-	
-	public void runTruthByMan(String manName,int classID){
-		try {
-			Session session = DataBaseConnection.getSession();	
-			String sql="call importer.GEN_TRUTH_by_man(cm.get_man_id('"+manName+"'),"+classID+") ";
-			System.out.println(sql);
-				 session.createSQLQuery(sql).executeUpdate();
-				 if (!session.getTransaction().isInitiator())
-						session.beginTransaction();
-					session.getTransaction().commit();
-				 System.out.println("here");
-				
-			} catch (Exception e) {
-				System.out.println("error here");
-				e.printStackTrace();
-			}
-	}
 
-	public void generateRolesByPL(String plName, int classID ) {
-		
+	public void runTruthByMan(String manName, int classID) {
 		try {
-			Session session = DataBaseConnection.getSession();		
-		String sql="call importer.GEN_TRUTH(cm.get_pl_id('"+plName+"'),"+classID+") ";
-		System.out.println(sql);
-			 session.createSQLQuery(sql).executeUpdate();
-			 if (!session.getTransaction().isInitiator())
-					session.beginTransaction();
-				session.getTransaction().commit();
-			 System.out.println("here");
-			
+			Session session = DataBaseConnection.getSession();
+			String sql = "call importer.GEN_TRUTH_by_man(cm.get_man_id('"
+					+ manName + "')," + classID + ") ";
+			System.out.println(sql);
+			session.createSQLQuery(sql).executeUpdate();
+			if (!session.getTransaction().isInitiator())
+				session.beginTransaction();
+			session.getTransaction().commit();
+			System.out.println("here");
+
 		} catch (Exception e) {
 			System.out.println("error here");
 			e.printStackTrace();
 		}
-		
+	}
+
+	public void generateRolesByPL(String plName, int classID) {
+
+		try {
+			Session session = DataBaseConnection.getSession();
+			String sql = "call importer.GEN_TRUTH(cm.get_pl_id('" + plName
+					+ "')," + classID + ") ";
+			System.out.println(sql);
+			session.createSQLQuery(sql).executeUpdate();
+			if (!session.getTransaction().isInitiator())
+				session.beginTransaction();
+			session.getTransaction().commit();
+			System.out.println("here");
+
+		} catch (Exception e) {
+			System.out.println("error here");
+			e.printStackTrace();
+		}
 
 	}
-	public void generateRolesByPN(String pn,String man, int classID
-			 ) {
+
+	public void generateRolesByPN(String pn, String man, int classID) {
 		System.out.println("here");
 		try {
-			Session session = DataBaseConnection.getSession();			
-		String sql="call cm.GEN_TRUTH_com(cm.GET_COM_ID_BY_PN_MAN('"+pn+"',cm.get_man_id('"+man+"')),cm.GET_PL_ID_BY_PN_MAN('"+pn+"',cm.get_man_id('"+man+"')),"+classID+") ";
-		System.out.println(sql);
-			 session.createSQLQuery(sql).executeUpdate();
-			 if (!session.getTransaction().isInitiator())
-					session.beginTransaction();
-				session.getTransaction().commit();
-			 System.out.println("here");
-			
+			Session session = DataBaseConnection.getSession();
+			String sql = "call cm.GEN_TRUTH_com(cm.GET_COM_ID_BY_PN_MAN('" + pn
+					+ "',cm.get_man_id('" + man
+					+ "')),cm.GET_PL_ID_BY_PN_MAN('" + pn + "',cm.get_man_id('"
+					+ man + "'))," + classID + ") ";
+			System.out.println(sql);
+			session.createSQLQuery(sql).executeUpdate();
+			if (!session.getTransaction().isInitiator())
+				session.beginTransaction();
+			session.getTransaction().commit();
+			System.out.println("here");
+
 		} catch (Exception e) {
 			System.out.println("error here");
 			e.printStackTrace();

@@ -36,7 +36,7 @@ public class DynamicToolAction
 		Statement st2 = null;
 		ResultSet rs2 = null;
 		Statement insertStatment = null;
-
+		BufferedWriter writeToFile = null;
 		ArrayList<String> plChk = new ArrayList<String>();
 
 		try
@@ -64,8 +64,7 @@ public class DynamicToolAction
 			String pdfURL = "";
 			String rufUrlId = "";
 
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			writeToFile = new BufferedWriter(new FileWriter(log + "Log.txt"));
 
 			writeToFile
 					.write("SE Product Line\tCode Name\tCode Version\tExecution Order(Exit when fired)\tStatus");
@@ -86,11 +85,13 @@ public class DynamicToolAction
 
 			{
 
+				clasId = "";
 				try
 
 				{
 
-					plName = (row.get(0) == null) ? "" : row.get(0);
+					plName = (row.get(0) == null) ? "" : row.get(0).replaceAll(
+							"\"", "");
 
 					className = (row.get(1) == null) ? "" : row.get(1);
 
@@ -120,14 +121,16 @@ public class DynamicToolAction
 					// "select cm.get_pl_id('ALU')from dual";
 
 					executionOrd = (row.get(5) == null) ? "" : row.get(5);
+					if (clasId.equals("")) {
 
-					if (plName.equalsIgnoreCase(""))
+						status = "Error Code name or version";
+
+					} else if (plName.equalsIgnoreCase(""))
 
 						status = "Can't Insert Product Line By Null";
-
-					else
-
-					if (className.equalsIgnoreCase("")
+					else if (pl.equals("-1"))
+						status = "Can't Insert Error Product Line";
+					else if (className.equalsIgnoreCase("")
 							&& classVer.equalsIgnoreCase(""))
 
 					{
@@ -345,10 +348,11 @@ public class DynamicToolAction
 					e.printStackTrace();
 
 				}
-				if (pls.add(pl + "," + clasId))
+				if (pls.add(pl + "," + clasId) && !clasId.equals("")) {
 					insertStatment
 							.executeUpdate("insert into importer.generated_pl(pl_id,status,class_id) values ("
 									+ pl + ",0," + clasId + ")");
+				}
 				writeToFile.write((new StringBuilder(String.valueOf(plName)))
 						.append("\t").append(className).append("\t")
 						.append(classVer).append("\t").append(executionOrd)
@@ -357,8 +361,6 @@ public class DynamicToolAction
 				writeToFile.newLine();
 
 			}
-
-			writeToFile.close();
 
 			con.commit();
 
@@ -392,6 +394,13 @@ public class DynamicToolAction
 
 			}
 
+		} finally {
+			try {
+				writeToFile.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return Url;
@@ -430,9 +439,11 @@ public class DynamicToolAction
 		Connection con = null;
 		ResultSet rSet = null;
 		PreparedStatement pstmt = null;
+		Statement st = null;
 		try {
 			String className = "";
 			String codeVer = "";
+			String plName = "";
 			String directory = Utils.createDirector(log);
 			Url = (new StringBuilder(String.valueOf(log)))
 					.append("DynamicGenRulesTools\\")
@@ -442,38 +453,45 @@ public class DynamicToolAction
 					+ "Log.txt"));
 
 			con = Utils.connectDatabase();
-
+			st = con.createStatement();
 			writeToFile
 					.write("SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5");
 
 			writeToFile.newLine();
 
-			query = (new StringBuilder(
-					"select SE_PRODUCT_LINE,CLASS_NAME,CODE_VERSION,CODE_DESCRIPTION,REF_URL,EXECUTION_ORDER,CODE,SE_PARAMETERS_NAME_1,START_COND_1,START_VALUE_1,START_MULTIPLIER_1,START_UNIT_1,END_COND_1,END_VALUE_1,END_MULTIPLIER_1,END_UNIT_1,SE_PARAMETERS_NAME_2,START_COND_2,START_VALUE_2,START_MULTIPLIER_2,START_UNIT_2,END_COND_2,END_VALUE_2,END_MULTIPLIER_2,END_UNIT_2,SE_PARAMETERS_NAME_3,START_COND_3,START_VALUE_3,START_MULTIPLIER_3,START_UNIT_3,END_COND_3,END_VALUE_3,END_MULTIPLIER_3,END_UNIT_3,SE_PARAMETERS_NAME_4,START_COND_4,START_VALUE_4,START_MULTIPLIER_4,START_UNIT_4,END_COND_4,END_VALUE_4,END_MULTIPLIER_4,END_UNIT_4,SE_PARAMETERS_NAME_5,START_COND_5,START_VALUE_5,START_MULTIPLIER_5,START_UNIT_5,END_COND_5,END_VALUE_5,END_MULTIPLIER_5,END_UNIT_5 from "))
-					.append(sch)
-					.append(".CLAS_ROLLS where CLASS_NAME=? and CODE_VERSION=? order by SE_PRODUCT_LINE,EXECUTION_ORDER")
-					.toString();
+			// query =
+			// ("select SE_PRODUCT_LINE,CLASS_NAME,CODE_VERSION,CODE_DESCRIPTION,REF_URL,EXECUTION_ORDER,CODE,SE_PARAMETERS_NAME_1,START_COND_1,START_VALUE_1,START_MULTIPLIER_1,START_UNIT_1,END_COND_1,END_VALUE_1,END_MULTIPLIER_1,END_UNIT_1,SE_PARAMETERS_NAME_2,START_COND_2,START_VALUE_2,START_MULTIPLIER_2,START_UNIT_2,END_COND_2,END_VALUE_2,END_MULTIPLIER_2,END_UNIT_2,SE_PARAMETERS_NAME_3,START_COND_3,START_VALUE_3,START_MULTIPLIER_3,START_UNIT_3,END_COND_3,END_VALUE_3,END_MULTIPLIER_3,END_UNIT_3,SE_PARAMETERS_NAME_4,START_COND_4,START_VALUE_4,START_MULTIPLIER_4,START_UNIT_4,END_COND_4,END_VALUE_4,END_MULTIPLIER_4,END_UNIT_4,SE_PARAMETERS_NAME_5,START_COND_5,START_VALUE_5,START_MULTIPLIER_5,START_UNIT_5,END_COND_5,END_VALUE_5,END_MULTIPLIER_5,END_UNIT_5 from importer.CLAS_ROLLS where CLASS_NAME=? and CODE_VERSION=? order by SE_PRODUCT_LINE,EXECUTION_ORDER");
 
-			pstmt = con.prepareStatement(query);
+			// pstmt = con.prepareStatement(query);
 
-			for (int row = 0; row < txtDataList.size(); row++)
+			for (int row = 1; row < txtDataList.size(); row++)
 
 				try
 
 				{
+					plName = ((String) ((List) txtDataList.get(row)).get(0))
+							.trim().replaceAll("\"","");
 
-					className = ((String) ((List) txtDataList.get(row)).get(0))
+					className = ((String) ((List) txtDataList.get(row)).get(1))
 							.trim();
 
-					codeVer = ((String) ((List) txtDataList.get(row)).get(1))
+					codeVer = ((String) ((List) txtDataList.get(row)).get(2))
 							.trim();
+					query = ("select SE_PRODUCT_LINE,CLASS_NAME,CODE_VERSION,CODE_DESCRIPTION,REF_URL,EXECUTION_ORDER,CODE,SE_PARAMETERS_NAME_1,START_COND_1,START_VALUE_1,START_MULTIPLIER_1,START_UNIT_1,END_COND_1,END_VALUE_1,END_MULTIPLIER_1,END_UNIT_1,SE_PARAMETERS_NAME_2,START_COND_2,START_VALUE_2,START_MULTIPLIER_2,START_UNIT_2,END_COND_2,END_VALUE_2,END_MULTIPLIER_2,END_UNIT_2,SE_PARAMETERS_NAME_3,START_COND_3,START_VALUE_3,START_MULTIPLIER_3,START_UNIT_3,END_COND_3,END_VALUE_3,END_MULTIPLIER_3,END_UNIT_3,SE_PARAMETERS_NAME_4,START_COND_4,START_VALUE_4,START_MULTIPLIER_4,START_UNIT_4,END_COND_4,END_VALUE_4,END_MULTIPLIER_4,END_UNIT_4,SE_PARAMETERS_NAME_5,START_COND_5,START_VALUE_5,START_MULTIPLIER_5,START_UNIT_5,END_COND_5,END_VALUE_5,END_MULTIPLIER_5,END_UNIT_5 from importer.CLAS_ROLLS where CLASS_NAME='"
+							+ className
+							+ "' and CODE_VERSION='"
+							+ codeVer
+							+ "' and SE_PRODUCT_LINE='" + plName + "' order by SE_PRODUCT_LINE,EXECUTION_ORDER");
+					System.out.println(query);
+					// pstmt.setString(1, className);
 
-					pstmt.setString(1, className);
+					// pstmt.setString(2, codeVer);
+					rSet = st.executeQuery(query);
 
-					pstmt.setString(2, codeVer);
-
-					for (rSet = pstmt.executeQuery(); rSet.next(); writeToFile
-							.newLine())
+					while (rSet.next()) {
+						// for (rSet = pstmt.executeQuery(); rSet.next();
+						// writeToFile
+						// .newLine())
 
 						writeToFile.write((new StringBuilder(String
 								.valueOf(rSet.getString(1) == null ? ""
@@ -628,7 +646,8 @@ public class DynamicToolAction
 								.append("\t")
 								.append(rSet.getString(51) == null ? "" : rSet
 										.getString(51)).toString());
-
+						writeToFile.newLine();
+					}
 					rSet.close();
 
 				}
@@ -645,7 +664,7 @@ public class DynamicToolAction
 
 			writeToFile.close();
 
-			pstmt.close();
+			// pstmt.close();
 
 			con.close();
 
@@ -717,13 +736,14 @@ public class DynamicToolAction
 
 			pstmt = con.prepareStatement(query);
 
-			for (int row = 0; row < txtDataList.size(); row++)
+			for (int row = 1; row < txtDataList.size(); row++)
 
 				try
 
 				{
 
-					pl = ((String) ((List) txtDataList.get(row)).get(0)).trim();
+					pl = ((String) ((List) txtDataList.get(row)).get(0)).trim()
+							.replaceAll("\"", "");
 
 					className = ((String) ((List) txtDataList.get(row)).get(1))
 							.trim();
@@ -992,10 +1012,10 @@ public class DynamicToolAction
 					.toString();
 			pstmtIns = con.prepareStatement(queryIns);
 			pstmtDel = con.prepareStatement(queryDel);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try {
 					plName = ((String) ((List) txtDataList.get(row)).get(0))
-							.trim();
+							.trim().replaceAll("\"", "");
 					className = ((String) ((List) txtDataList.get(row)).get(1))
 							.trim();
 					classVer = ((String) ((List) txtDataList.get(row)).get(2))
@@ -1209,7 +1229,7 @@ public class DynamicToolAction
 
 			// pstmtIns = con.prepareStatement(queryIns);
 			// pstmtDel = con.prepareStatement(queryDel);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 
 				className = ((String) ((List) txtDataList.get(row)).get(0))
 						.trim();
@@ -1291,7 +1311,7 @@ public class DynamicToolAction
 
 			pstmt = con.prepareStatement(query);
 
-			for (int row = 0; row < txtDataList.size(); row++)
+			for (int row = 1; row < txtDataList.size(); row++)
 
 				try
 
@@ -1407,13 +1427,14 @@ public class DynamicToolAction
 			deleteStatment = con.createStatement();
 			insertStatment = con.createStatement();
 			selectStatment = con.createStatement();
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				codeId = null;
 				try
 
 				{
 
-					pl = ((String) ((List) txtDataList.get(row)).get(0)).trim();
+					pl = ((String) ((List) txtDataList.get(row)).get(0)).trim()
+							.replaceAll("\"", "");
 
 					className = ((String) ((List) txtDataList.get(row)).get(1))
 							.trim();

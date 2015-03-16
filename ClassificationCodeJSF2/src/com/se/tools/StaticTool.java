@@ -25,7 +25,7 @@ public class StaticTool extends ToolBean {
 		String currentHeader = "";
 		boolean validHeader = false;
 		if (function.equals("Update by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name\tClass Name\tClass Version\tSupplier\tREF_URL";
+			currentHeader = "Part Number\tSupplier Name\tStatic\tREF_URL";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.updatePNSAction("filename", list, classId);
@@ -51,9 +51,17 @@ public class StaticTool extends ToolBean {
 			}
 
 		} else if (function.equals("Update by PL")) {
-			staticActions.updatePLAction("filename", list, classId);
+			currentHeader = "Product Line\tStatic\tREF_URL";
+			validHeader = checkHeader(currentHeader, list.get(0));
+			if (validHeader) {
+				staticActions.updatePLAction("filename", list, classId);
+			} else {
+				return "the header must be " + currentHeader;
+			}
+			
+			
 		} else if (function.equals("Export by PL")) {
-			currentHeader = "Product Line\tSupplier Name";
+			currentHeader = "Product Line";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.exportPLAction("", list, classId);
@@ -62,7 +70,7 @@ public class StaticTool extends ToolBean {
 			}
 
 		} else if (function.equals("Delete by PL")) {
-			currentHeader = "Product Line\tSupplier Name";
+			currentHeader = "Product Line";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.deletePLAction("", list, classId);
@@ -71,7 +79,7 @@ public class StaticTool extends ToolBean {
 			}
 
 		}
-		MainWindowBean.downloadController();
+//		MainWindowBean.downloadController();
 		return "The Process Done";
 	}
 }

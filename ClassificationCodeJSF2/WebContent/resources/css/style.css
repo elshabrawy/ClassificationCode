@@ -26,3 +26,16 @@
 	padding-top: 150px;
 	padding-bottom: 100px;
 }
+
+#form\:menu > div
+{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#form\:main > div
+{
+	display: table-cell;
+	vertical-align: middle;
+	width: 1050px;
+}

@@ -8,6 +8,7 @@
         <title>Login Page</title>
     </h:head>
     <h:body>
+     <f:view transient="true">
         <h:form>
             <p:dialog  showEffect="explode" hideEffect="explode" id="dialog" header="Login" showHeader="false" widgetVar="dlg" closable="false" resizable="false" visible="true">  
 
@@ -42,11 +43,11 @@
                 else {  
                     dlg.hide();  
                     $('#loginLink').fadeOut();  
-                    document.location.href='MainWindow.jsf';
+                    document.location.href='SelectedTool.jsf';
                 }  
             }  
         </script>   
-       
+       </f:view>
     </h:body>
 </html>
 

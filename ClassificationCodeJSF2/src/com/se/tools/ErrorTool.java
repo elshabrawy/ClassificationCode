@@ -93,7 +93,7 @@ public class ErrorTool extends ToolBean {
 				return "the header must be " + currentHeader;
 			}
 		}
-		MainWindowBean.downloadController();
+//		MainWindowBean.downloadController();
 		return "The Process Done";
 	}
 

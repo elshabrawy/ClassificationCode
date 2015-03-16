@@ -39,10 +39,10 @@ public class ExceptionToolActions {
 			writeToFile.newLine();
 			query = "update cm.PART_CODE set STATIC_CLASS=? ,se_class=? , STATIC_REF_URL=? ,ref='Exception', MANUAL_FLAG=1 where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try {
-					pn = txtDataList.get(row).get(0).trim();
-					man = txtDataList.get(row).get(1).trim();
+					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					staticClass = txtDataList.get(row).get(2).trim();
 					refUrl = txtDataList.get(row).get(3).trim();
 					if (!pn.equalsIgnoreCase("") && !man.equalsIgnoreCase("")
@@ -106,10 +106,10 @@ public class ExceptionToolActions {
 			writeToFile.newLine();
 			query = "update cm.PART_CODE set MANUAL_FLAG=0,STATIC_CLASS='', STATIC_REF_URL ='' where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try {
-					pn = txtDataList.get(row).get(0).trim();
-					man = txtDataList.get(row).get(1).trim();
+					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					if (!pn.equalsIgnoreCase("") && !man.equalsIgnoreCase("")) {
 						pstmt.setString(1, pn);
 						pstmt.setString(2, man);
@@ -169,9 +169,9 @@ public class ExceptionToolActions {
 					+ sch
 					+ ".CLASSIFICATION_CODE c where x.man_id = get_man_id(?) and x.COM_ID=p.COM_ID and p.CLAS_ID=? and p.CLAS_ID=c.CLAS_ID and MANUAL_FLAG=1";
 			pstmt = con.prepareStatement(query);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try {
-					supp = txtDataList.get(row).get(0).trim();
+					supp = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					pstmt.setString(1, supp);
 					pstmt.setInt(2, id);
 					rs = pstmt.executeQuery();
@@ -268,10 +268,10 @@ public class ExceptionToolActions {
 					+ sch
 					+ ".CLASSIFICATION_CODE c where p.COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID ";
 			pstmt = con.prepareStatement(query);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try {
-					pn = txtDataList.get(row).get(0).trim();
-					man = txtDataList.get(row).get(1).trim();
+					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					pstmt.setString(1, pn);
 					pstmt.setString(2, man);
 					pstmt.setInt(3, id);
@@ -369,9 +369,9 @@ public class ExceptionToolActions {
 					+ sch
 					+ ".CLASSIFICATION_CODE c where p.PL_ID=get_pl_id(?) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID and  MANUAL_FLAG=1";
 			pstmt = con.prepareStatement(query);
-			for (int row = 0; row < txtDataList.size(); row++) {
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try {
-					pl = txtDataList.get(row).get(0).trim();
+					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					pstmt.setString(1, pl);
 					pstmt.setInt(2, id);
 					rs = pstmt.executeQuery();

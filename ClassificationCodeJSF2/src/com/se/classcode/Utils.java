@@ -43,15 +43,7 @@ public class Utils {
 			String USER = "cm";
 			String PASS = "cmpwd";
 			conn = DriverManager.getConnection(URL, USER, PASS);
-			// String url = "jdbc:oracle:thin:@develop-test:1521:xlp";
-			//
-			// //properties for creating connection to Oracle database
-			// Properties props = new Properties();
-			// props.setProperty("user", "cm");
-			// props.setProperty("password", "cmpwd");
-			//
-			// //creating connection to Oracle database using JDBC
-			// conn = DriverManager.getConnection(url,props);
+			
 
 		} catch (Exception e) {
 		}
@@ -68,13 +60,7 @@ public class Utils {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			// try {
-			// in.close();
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// }
-		}
+		} 
 		return connection;
 	}
 
@@ -102,19 +88,5 @@ public class Utils {
 		return pathOnServer;
 	}
 
-	public static void main(String args[]) {
-		Connection con = connectDatabase();
-		try {
-			Statement st = con.createStatement();
-			ResultSet rs = st
-					.executeQuery("select * from cm.part_code where COM_ID = 45631987");
-			while (rs.next()) {
-				System.out.println(rs.getString("com_id"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 }

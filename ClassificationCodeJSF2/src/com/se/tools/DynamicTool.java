@@ -92,7 +92,7 @@ public class DynamicTool extends ToolBean {
 			}	
 			
 		}
-		MainWindowBean.downloadController();
+//		MainWindowBean.downloadController();
 		return "The Process Done";
 	}
 }

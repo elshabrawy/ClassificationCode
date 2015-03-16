@@ -25,6 +25,7 @@ public class StaticToolActions {
 		String query = "";
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		String pdfId="";
 		try{
 			String pn = "", man = "", staticClass = "", refUrl = "";
 			@SuppressWarnings("unused")
@@ -37,10 +38,10 @@ public class StaticToolActions {
 			query = "update cm.PART_CODE set STATIC_CLASS=? , STATIC_REF_URL=? ,reason='Static Code Change' where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
 			DD:
-			for(int row = 0; row < txtDataList.size(); row++){
+			for(int row = 1; row < txtDataList.size(); row++){
 				try{
-					pn = txtDataList.get(row).get(0).trim();
-					man = txtDataList.get(row).get(1).trim();
+					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					staticClass = txtDataList.get(row).get(2).trim();
 					refUrl = txtDataList.get(row).get(3).trim();
 					
@@ -50,10 +51,12 @@ public class StaticToolActions {
 						rs = st.executeQuery("select importer.GET_PDF_ID_By_URL('" + refUrl + "') pdf from dual");
 						while(rs.next())
 						{
-							refUrl = (rs.getString("pdf")==null)?null:rs.getString("pdf").toString();
-							System.out.println("pdf url is " + refUrl);
+							pdfId = (rs.getString("pdf")==null)?null:rs.getString("pdf").toString();
+							System.out.println("pdf url is " + pdfId);
 						}
-						if(refUrl == null || refUrl.equals(""))
+						rs.close();
+						st.close();
+						if(pdfId == null || pdfId.equals(""))
 						{
 							writeToFile.write(pn + "\t" + man + "\t" + staticClass + "\t" + refUrl + "\t" + "Please Insert Offline");
 							writeToFile.newLine();
@@ -116,10 +119,10 @@ public class StaticToolActions {
 			writeToFile.newLine();
 			query = "update cm.PART_CODE set STATIC_CLASS=null ,reason='Static Code Change' , STATIC_REF_URL=null where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
-			for(int row = 0; row < txtDataList.size(); row++){
+			for(int row = 1; row < txtDataList.size(); row++){
 				try{
-					pn = txtDataList.get(row).get(0).trim();
-					man = txtDataList.get(row).get(1).trim();
+					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					pstmt.setString(1, pn);
 					pstmt.setString(2, man);
 					pstmt.setInt(3, id);
@@ -173,11 +176,12 @@ public class StaticToolActions {
 			writeToFile.newLine();
 			query = "update cm.PART_CODE set STATIC_CLASS=? ,reason='Static Code Change', STATIC_REF_URL=? where PL_ID=get_pl_id(?) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
+			String pdfId="";
 			DD:
-			for(int row = 0; row < txtDataList.size(); row++){
+			for(int row = 1; row < txtDataList.size(); row++){
 				try{
-					pl = txtDataList.get(row).get(0).trim();
-					staticClass = txtDataList.get(row).get(1).trim();
+					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					staticClass = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					refUrl = txtDataList.get(row).get(2).trim();
 					if(!refUrl.equals("") )
 					{
@@ -185,10 +189,10 @@ public class StaticToolActions {
 						rs = st.executeQuery("select importer.GET_PDF_ID_By_URL('" + refUrl + "') pdf from dual");
 						while(rs.next())
 						{
-							refUrl = (rs.getString("pdf")==null)?null:rs.getString("pdf").toString();
+							pdfId = (rs.getString("pdf")==null)?null:rs.getString("pdf").toString();
 							System.out.println("pdf url is " + refUrl);
 						}
-						if(refUrl == null || refUrl.equals(""))
+						if(pdfId == null || pdfId.equals(""))
 						{
 							writeToFile.write(pl + "\t" + staticClass + "\t" + refUrl + "\t" + "Please Insert Offline");
 							writeToFile.newLine();
@@ -252,9 +256,9 @@ public class StaticToolActions {
 			writeToFile.newLine();
 			query = "update cm.PART_CODE set STATIC_CLASS=null ,reason='Static Code Change', STATIC_REF_URL=null where PL_ID=get_pl_id(?) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
-			for(int row = 0; row < txtDataList.size(); row++){
+			for(int row = 1; row < txtDataList.size(); row++){
 				try{
-					pl = txtDataList.get(row).get(0).trim();
+					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					pstmt.setString(1, pl);
 					pstmt.setInt(2, id);
 					int count = pstmt.executeUpdate();
@@ -305,10 +309,10 @@ public class StaticToolActions {
 			writeToFile.newLine();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x,importer.CLASSIFICATION_CODE c where p.COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
-			for(int row = 0; row < txtDataList.size(); row++){
+			for(int row = 1; row < txtDataList.size(); row++){
 				try{
-					pn = txtDataList.get(row).get(0).trim();
-					man = txtDataList.get(row).get(1).trim();
+					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					pstmt.setString(1, pn);
 					pstmt.setString(2, man);
 					pstmt.setInt(3, id);
@@ -405,9 +409,9 @@ public class StaticToolActions {
 			writeToFile.newLine();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x,importer.CLASSIFICATION_CODE c where p.PL_ID=get_pl_id(?) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
-			for(int row = 0; row < txtDataList.size(); row++){
+			for(int row = 1; row < txtDataList.size(); row++){
 				try{
-					pl = txtDataList.get(row).get(0).trim();
+					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					pstmt.setString(1, pl);
 					pstmt.setInt(2, id);
 					rs = pstmt.executeQuery();

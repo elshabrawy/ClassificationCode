@@ -95,7 +95,7 @@ public class SupplierTool extends ToolBean {
 			}
 
 		}
-		MainWindowBean.downloadController();
+//		MainWindowBean.downloadController();
 		return "The Process Done";
 	}
 }
