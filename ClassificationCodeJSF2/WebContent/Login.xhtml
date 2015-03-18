@@ -1,40 +1,40 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>Login Page</title>
-    </h:head>
-    <h:body>
-     <f:view transient="true">
-        <h:form>
-            <p:dialog  showEffect="explode" hideEffect="explode" id="dialog" header="Login" showHeader="false" widgetVar="dlg" closable="false" resizable="false" visible="true">  
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Login Page</title>
+</h:head>
+<h:body>	
+		<h:form>
+			<p:dialog showEffect="explode" hideEffect="explode" id="dialog"
+				header="Login" showHeader="false" widgetVar="dlg" closable="false"
+				resizable="false" visible="true">
 
-                <h:panelGrid columns="2" cellpadding="5">  
-                    <h:outputLabel for="username" value="Username:" />  
-                    <p:inputText value="#{login.username}"   
-                                 id="username" required="true" label="username" />  
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel for="username" value="Username:" />
+					<p:inputText value="#{login.username}" id="username"
+						required="true" label="username" />
 
-                    <h:outputLabel for="password" value="Password:" />  
-                    <p:password value="#{login.password}"   
-                                   id="password" required="true" label="password" />  
+					<h:outputLabel for="password" value="Password:" />
+					<p:password value="#{login.password}" id="password" required="true"
+						label="password" />
 
-                    <f:facet name="footer">  
-                        <p:commandButton  id="loginButton" value="Login" 
-                                          actionListener="#{login.login}"   
-                                          oncomplete="handleLoginRequest(xhr, status, args)">
-<!--                            <p:ajax update ="dialog"></p:ajax>-->
-                        </p:commandButton> 
+					<f:facet name="footer">
+						<p:commandButton id="loginButton" value="Login" ajax="false"
+							action="#{login.onLogin}">
+						
+						</p:commandButton>
 
-                     
-                    </f:facet>  
-                </h:panelGrid>  
 
-            </p:dialog>  
-        </h:form> 
-         <script type="text/javascript">  
+					</f:facet>
+				</h:panelGrid>
+
+			</p:dialog>
+		</h:form>
+		<script type="text/javascript">  
             function handleLoginRequest(xhr, status, args) {
                
                 if(args.validationFailed || !args.loggedIn) {  
@@ -46,8 +46,8 @@
                     document.location.href='SelectedTool.jsf';
                 }  
             }  
-        </script>   
-       </f:view>
-    </h:body>
+        </script>
+	
+</h:body>
 </html>
 
