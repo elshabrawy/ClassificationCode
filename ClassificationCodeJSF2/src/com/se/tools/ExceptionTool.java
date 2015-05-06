@@ -21,12 +21,12 @@ public class ExceptionTool extends ToolBean {
 	}
 
 	public String performAction(ArrayList<ArrayList<String>> list,
-			String function, int classId) {
+			String function, int classId,String fileName) {
 		System.out.println("Exception action here");
 		String currentHeader = "";
 		boolean validHeader = false;
 		if (function.equals("Update by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name\tClass Name\tClass Version\tSupplier\tREF_URL";
+			currentHeader = "Part Number,Supplier Name,Class Name,Class Version,Supplier,REF_URL";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				exceptionActions.updatePNSAction("filename", list, classId);
@@ -34,7 +34,7 @@ public class ExceptionTool extends ToolBean {
 				return "the header must be " + currentHeader;
 			}
 		} else if (function.equals("Export by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name";
+			currentHeader = "Part Number,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				exceptionActions.exportPNSAction("", list, classId);
@@ -43,7 +43,7 @@ public class ExceptionTool extends ToolBean {
 			}
 
 		} else if (function.equals("Delete by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name";
+			currentHeader = "Part Number,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				exceptionActions.deletePNSAction("", list, classId);
@@ -54,7 +54,7 @@ public class ExceptionTool extends ToolBean {
 		} else if (function.equals("Export All Exception Parts")) {
 			exceptionActions.exportAllErrorParts();
 		} else if (function.equals("Export by PL")) {
-			currentHeader = "Product Line\tSupplier Name";
+			currentHeader = "Product Line,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				exceptionActions.exportPLAction("", list, classId);
@@ -63,7 +63,7 @@ public class ExceptionTool extends ToolBean {
 			}
 
 		} else if (function.equals("Export by PL")) {
-			currentHeader = "Product Line\tSupplier Name";
+			currentHeader = "Product Line,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				exceptionActions.exportPLAction("", list, classId);
@@ -71,7 +71,7 @@ public class ExceptionTool extends ToolBean {
 				return "the header must be " + currentHeader;
 			}
 		} else if (function.equals("Export by Supplier")) {
-			currentHeader = "Product Line\tSupplier Name";
+			currentHeader = "Product Line,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				exceptionActions.exportSuppAction("", list, classId);

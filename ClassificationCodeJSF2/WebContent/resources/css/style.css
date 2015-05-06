@@ -3,6 +3,7 @@
 .ui-tabs-left {
 	height: 770px;
 }
+
 .centerContent {
 	align-content: center;
 	margin: 0 auto 0 auto;
@@ -27,14 +28,12 @@
 	padding-bottom: 100px;
 }
 
-#form\:menu > div
-{
+#form\:menu>div {
 	display: table-cell;
 	vertical-align: middle;
 }
 
-#form\:main > div
-{
+#form\:main>div {
 	display: table-cell;
 	vertical-align: middle;
 	width: 1050px;

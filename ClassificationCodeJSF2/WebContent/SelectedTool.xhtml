@@ -22,76 +22,82 @@
 </h:head>
 <h:body>
 
-		<h:outputStylesheet library="css" name="style.css"></h:outputStylesheet>
-		<h:form id="form" style="height:100%;">
+	<h:outputStylesheet library="css" name="style.css"></h:outputStylesheet>
+	<h:form id="form" style="height:100%;">
 
-			<div
-				style="align-content: center; margin-left: auto; margin-right: auto; padding-left: 25%">
-				<p:graphicImage style="" value="loading_lglogo.png" />
-			</div>
-			<p:layout id="parent" style="width:100%; height:100%;">
-				<p:layoutUnit id="menu" position="west" resizable="true" size="200"
-					style="height:540px ;background:green;">
+		<div
+			style="align-content: center; margin-left: auto; margin-right: auto; padding-left: 25%">
+			<p:graphicImage style="" value="loading_lglogo.png" />
+		</div>
+		<p:layout id="parent" style="width:100%; height:100%;">
+			<p:layoutUnit id="menu" position="west" resizable="true" size="200"
+				style="height:540px ;background:green;">
 
-					<p:commandButton id="CodeVersion" value="Code Version"
-						process="@this" style="width:190px;text-align: center; "
-						ajax="false" actionListener="#{mainWindowBean.codeVersion}">
-					</p:commandButton>
-					<p:commandButton id="Static" value="Static Tool" process="@this"
-						style="width:190px;text-align: center; " ajax="false"
-						actionListener="#{mainWindowBean.staticTool}">
+				<p:commandButton id="CodeVersion" value="Code Version"
+					update="downloadLink" process="@this"
+					style="width:190px;text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.codeVersion}">
+				</p:commandButton>
+				<p:commandButton id="Static" value="Static Tool" process="@this"
+					update="downloadLink" style="width:190px;text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.staticTool}">
 
-					</p:commandButton>
-					<p:commandButton id="Supplier" value="Supplier Tool"
-						process="@this" style="width:190px;text-align: center; "
-						ajax="false" actionListener="#{mainWindowBean.supplierTool}">
+				</p:commandButton>
+				<p:commandButton id="Supplier" value="Supplier Tool"
+					update="downloadLink" process="@this"
+					style="width:190px;text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.supplierTool}">
 
-					</p:commandButton>
-					<p:commandButton id="Dynamic" value="Dynamic Tool" process="@this"
-						style="width:190px; text-align: center; " ajax="false"
-						actionListener="#{mainWindowBean.dynamicTool}">
+				</p:commandButton>
+				<p:commandButton id="Dynamic" value="Dynamic Tool" process="@this"
+					update="downloadLink" style="width:190px; text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.dynamicTool}">
 
-					</p:commandButton>
-					<p:commandButton id="Error" value="Error Tool" process="@this"
-						style="width:190px; text-align: center; " ajax="false"
-						actionListener="#{mainWindowBean.errorTool}">
+				</p:commandButton>
+				<p:commandButton id="Error" value="Error Tool" process="@this"
+					update="downloadLink" style="width:190px; text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.errorTool}">
 
-					</p:commandButton>
-					<p:commandButton id="Exception" value="Exception Tool"
-						process="@this" style="width:190px; text-align: center; "
-						ajax="false" actionListener="#{mainWindowBean.exceptionTool}">
+				</p:commandButton>
+				<p:commandButton id="Exception" value="Exception Tool"
+					update="downloadLink" process="@this"
+					style="width:190px; text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.exceptionTool}">
 
-					</p:commandButton>
-					<p:commandButton id="Truth" value="Truth Tool" process="@this"
-						style="width:190px; text-align: center; " ajax="false"
-						actionListener="#{mainWindowBean.truthTool}">
+				</p:commandButton>
+				<p:commandButton id="Truth" value="Truth Tool" process="@this"
+					update="downloadLink" style="width:190px; text-align: center; "
+					ajax="false" actionListener="#{mainWindowBean.truthTool}">
 
-					</p:commandButton>
-					<p:commandButton id="Statistics" value="Statistics Tool"
-						process="@this" style="width:190px; text-align: center; "
-						ajax="false" actionListener="#{mainWindowBean.statisticsTool}">
+				</p:commandButton>
+				<p:commandButton id="Statistics" value="Statistics Tool"
+					update="downloadLink" process="@this"
+					style="width:190px; text-align: center; " ajax="false"
+					actionListener="#{mainWindowBean.statisticsTool}">
 
-					</p:commandButton>
+				</p:commandButton>
 
-				</p:layoutUnit>
+			</p:layoutUnit>
 
-				<p:layoutUnit id="main"
-					style="align-content: center;	margin-left: auto; margin-right: auto;  height:100%; background:green; width:80% "
-					position="center">
+			<p:layoutUnit id="main"
+				style="align-content: center;	margin-left: auto; margin-right: auto;  height:100%; background:green; width:80% "
+				position="center">
 
+				<h:form rendered="#{mainWindowBean.showTool}">
 					<div
-						style="align-content: center; margin-left: auto; margin-right: auto; width: 70%; border: 2px solid;height:35%;">
+						style="align-content: center; margin-left: auto; margin-right: auto; width: 70%; border: 2px solid; height: 45%;">
 						<p:outputLabel
-							style="font-style: italic;color:BLACK; font-size: 30px;"
+							style="font-style: italic;color:BLACK; font-size: 30px; width:100%;margin-left: auto; margin-right: auto;"
 							value="#{mainWindowBean.toolName}"></p:outputLabel>
 						<h:panelGrid style="align-content: center;	margin: 0 auto 0 auto;"
 							columns="2">
 
 							<h:panelGrid columns="2"
-								style="text-align: center;border-width: 5px;">   
-                                           <p:outputLabel value="Code Name:" rendered="#{mainWindowBean.showClassId}">
-                                           </p:outputLabel>
-                          <h:selectOneMenu id="codeN"
+								style="text-align: center;border-width: 5px;">
+								<p:outputLabel value="Code Name:"
+									rendered="#{mainWindowBean.showClassId}">
+								</p:outputLabel>
+								<h:selectOneMenu id="codeN"
 									rendered="#{mainWindowBean.showClassId}"
 									value="#{mainWindowBean.codeName}">
 
@@ -99,12 +105,16 @@
 
 									<f:ajax event="change" execute="@this" render="codeV" />
 								</h:selectOneMenu>
+
 							</h:panelGrid>
+
+
 							<h:panelGrid columns="2"
-								style="text-align: center;border-width: 5px; ">   
-                                            <p:outputLabel value="Code Version:" rendered="#{mainWindowBean.showClassId}">
-                                           </p:outputLabel> 
-                                            <h:selectOneMenu id="codeV"
+								style="text-align: center;border-width: 5px; ">
+								<p:outputLabel value="Code Version:"
+									rendered="#{mainWindowBean.showClassId}">
+								</p:outputLabel>
+								<h:selectOneMenu id="codeV"
 									rendered="#{mainWindowBean.showClassId}"
 									value="#{mainWindowBean.codeVer}">
 									<f:ajax />
@@ -112,16 +122,36 @@
 								</h:selectOneMenu>
 							</h:panelGrid>
 						</h:panelGrid>
+						<h:panelGrid columns="6"
+							style="text-align: center;border-width: 5px; " cellpadding="5" rendered="#{mainWindowBean.showUpdateCode}">
+							<h:outputText value="Update: " />
+							<p:selectBooleanCheckbox value="" />
+							<h:outputText value="Update To: " />
+							<p:inputText></p:inputText>
+							<h:outputText value="Update To: " />
+							<p:inputText></p:inputText>
+
+						</h:panelGrid>
+						<h:panelGrid columns="2"
+							style="text-align: center;border-width: 5px; " cellpadding="5" rendered="#{mainWindowBean.showUpdateCode}">
+							<h:outputText value="Code Definition: "
+								style="text-align: center;border-width: 5px; " />
+							<p:inputText size="75"></p:inputText>
+						</h:panelGrid>
 						<h:panelGrid cellpadding="2"
 							style="align-content: center;	margin: 0 auto 0 auto;">
 							<h:panelGrid id="display2"
 								style="align-content: center;	margin: 0 auto 0 auto;">
 								<p:fileUpload
 									fileUploadListener="#{mainWindowBean.handleFileUpload}"
+									acceptedTypes="xlsx" rendered="#{mainWindowBean.showUpload}"
 									process="@this" style="width: 500px;text-align: center; "
-									skinSimple="true" required="true" showButtons="false"
-									auto="false" sizeLimit="100000000"
-									allowTypes="/(\.|\/)(gif|jpe?g|png|txt)$/" />
+									skinSimple="false" required="true" showButtons="false"
+									auto="false" sizeLimit="10000000000"
+									allowTypes="/(\.|\/)(txt)$/" multiple="false"
+									dragDropSupport="true" update="output"
+									invalidFileMessage="Please upload file .txt" />
+								<h:outputText id="output" value="#{mainWindowBean.fileName}" />
 								<p:growl id="messages" showDetail="true" />
 							</h:panelGrid>
 							<h:panelGrid columns="2"
@@ -138,13 +168,15 @@
 						<h:panelGrid columns="2"
 							style="align-content: center;	margin: 0 auto 0 auto;">
 							<p:commandButton id="ExecuteButton" value="Execute"
-								process="@this" actionListener="#{mainWindowBean.performAction}"
+								update="downloadLink" process="@this"
+								actionListener="#{mainWindowBean.performAction}"
 								style=" text-align: center; " onstart="start()"
 								oncomplete="stop()">
 
 							</p:commandButton>
 							<p:commandButton id="downloadLink" value="Download"
-								process="@this" style="text-align: center; " ajax="false"
+								disabled="#{!mainWindowBean.showDownload}" process="@this"
+								style="text-align: center; " ajax="false"
 								actionListener="#{mainWindowBean.downloadController}"
 								onstart="start()" oncomplete="stop()">
 								<p:fileDownload value="#{mainWindowBean.outputFile}" />
@@ -157,11 +189,12 @@
 							</p:dialog>
 						</h:panelGrid>
 					</div>
-				</p:layoutUnit>
+				</h:form>
+			</p:layoutUnit>
 
-			</p:layout>
+		</p:layout>
 
-		</h:form>
-	
+	</h:form>
+
 </h:body>
 </html>

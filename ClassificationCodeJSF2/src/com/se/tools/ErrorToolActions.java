@@ -67,7 +67,7 @@ public class ErrorToolActions {
 		return "Done";
 	}
 
-	public String exportAllErrorCode() {
+	public String exportAllErrorCode(String fileName) {
 		String Url = "";
 		String query = "";
 		ResultSet rs = null;
@@ -80,10 +80,10 @@ public class ErrorToolActions {
 			// "\\ExceptionPartsTools");
 			// Url = log + "ExceptionPartsTools\\" + System.currentTimeMillis()+
 			// "AllExceptionParts.txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(Url));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 			writeToFile
-					.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
+					.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
 			writeToFile.newLine();
 
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME,c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF,p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from importer.PART_CODE_error p,cm.XLP_SE_COMPONENT x ,importer.CLASSIFICATION_CODE c where p.com_id=x.com_id and c.CLAS_ID=p.CLAS_ID"
@@ -93,7 +93,7 @@ public class ErrorToolActions {
 			rs = st.executeQuery(query);
 			int count = 0;
 			while (rs.next()) {
-				writeToFile.write(((rs.getString(1) != null) ? rs.getString(1)
+				writeToFile.append(((rs.getString(1) != null) ? rs.getString(1)
 						: "")
 						+ "\t"
 						+ ((rs.getString(2) != null) ? rs.getString(2) : "")

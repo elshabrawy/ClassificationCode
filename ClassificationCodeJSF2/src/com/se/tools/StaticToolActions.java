@@ -24,6 +24,7 @@ public class StaticToolActions {
 		String Url = "";
 		String query = "";
 		Connection con = null;
+		String comId="";
 		PreparedStatement pstmt = null;
 		String pdfId="";
 		try{
@@ -31,20 +32,22 @@ public class StaticToolActions {
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log);
 			Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Part Number\tSupplier Name\tStatic\tREF_URL\tStatus");
+			writeToFile.append("Part Number\tSupplier Name\tStatic\tREF_URL\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE set STATIC_CLASS=? , STATIC_REF_URL=? ,reason='Static Code Change' where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
 			DD:
 			for(int row = 1; row < txtDataList.size(); row++){
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try{
+					comId="";
 					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
 					staticClass = txtDataList.get(row).get(2).trim();
-					refUrl = txtDataList.get(row).get(3).trim();
-					
+					refUrl = txtDataList.get(row).get(3).trim();					
 					if(!refUrl.equals("") )
 					{
 						st = con.createStatement();
@@ -58,8 +61,9 @@ public class StaticToolActions {
 						st.close();
 						if(pdfId == null || pdfId.equals(""))
 						{
-							writeToFile.write(pn + "\t" + man + "\t" + staticClass + "\t" + refUrl + "\t" + "Please Insert Offline");
+							writeToFile.append(pn + "\t" + man + "\t" + staticClass + "\t" + refUrl + "\t" + "Please Insert Offline");
 							writeToFile.newLine();
+							writeToFile.close();
 							continue DD;
 						}							
 					}
@@ -79,15 +83,17 @@ public class StaticToolActions {
 					else{
 						status = "Can't Update Static By Null";
 					}
+				
 				} catch (Exception e){
 					// TODO: handle exception
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pn + "\t" + man + "\t" + staticClass + "\t" + refUrl + "\t" + status);
+				writeToFile.append(pn + "\t" + man + "\t" + staticClass + "\t" + refUrl + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -113,13 +119,15 @@ public class StaticToolActions {
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log );
 			Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Part Number\tSupplier Name\tStatus");
+			writeToFile.append("Part Number\tSupplier Name\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE set STATIC_CLASS=null ,reason='Static Code Change' , STATIC_REF_URL=null where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
 			for(int row = 1; row < txtDataList.size(); row++){
+				writeToFile=new BufferedWriter(new FileWriter(fileName,true));
 				try{
 					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
@@ -137,8 +145,9 @@ public class StaticToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pn + "\t" + man + "\t" + status);
+				writeToFile.append(pn + "\t" + man + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
 			writeToFile.close();
 			con.commit();
@@ -170,15 +179,17 @@ public class StaticToolActions {
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log);
 			Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Product Line\tStatic\tREF_URL\tStatus");
+			writeToFile.append("Product Line\tStatic\tREF_URL\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE set STATIC_CLASS=? ,reason='Static Code Change', STATIC_REF_URL=? where PL_ID=get_pl_id(?) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
 			String pdfId="";
 			DD:
 			for(int row = 1; row < txtDataList.size(); row++){
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try{
 					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					staticClass = txtDataList.get(row).get(1).trim().replaceAll("\"","");
@@ -194,8 +205,9 @@ public class StaticToolActions {
 						}
 						if(pdfId == null || pdfId.equals(""))
 						{
-							writeToFile.write(pl + "\t" + staticClass + "\t" + refUrl + "\t" + "Please Insert Offline");
+							writeToFile.append(pl + "\t" + staticClass + "\t" + refUrl + "\t" + "Please Insert Offline");
 							writeToFile.newLine();
+							writeToFile.close();
 							continue DD;
 						}							
 					}
@@ -219,10 +231,11 @@ public class StaticToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pl + "\t" + staticClass + "\t" + refUrl + "\t" + status);
+				writeToFile.append(pl + "\t" + staticClass + "\t" + refUrl + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -250,13 +263,15 @@ public class StaticToolActions {
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log );
 			Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Product Line\tStatus");
+			writeToFile.append("Product Line\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE set STATIC_CLASS=null ,reason='Static Code Change', STATIC_REF_URL=null where PL_ID=get_pl_id(?) and CLAS_ID=? and MANUAL_FLAG =0";
 			pstmt = con.prepareStatement(query);
 			for(int row = 1; row < txtDataList.size(); row++){
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try{
 					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					pstmt.setString(1, pl);
@@ -272,10 +287,11 @@ public class StaticToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pl + "\t" + status);
+				writeToFile.append(pl + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -303,13 +319,15 @@ public class StaticToolActions {
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log );
 			Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
+			writeToFile.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x,importer.CLASSIFICATION_CODE c where p.COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
 			for(int row = 1; row < txtDataList.size(); row++){
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try{
 					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
@@ -318,16 +336,18 @@ public class StaticToolActions {
 					pstmt.setInt(3, id);
 					rs = pstmt.executeQuery();
 					while (rs.next()){
-						writeToFile.write(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : "") + "\t" + ((rs.getString(16) != null) ? rs.getString(16) : ""));
+						writeToFile.append(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : "") + "\t" + ((rs.getString(16) != null) ? rs.getString(16) : ""));
 						writeToFile.newLine();
+						
 					}
 				} catch (Exception e){
 					// TODO: handle exception
 					e.printStackTrace();
 				}
+				writeToFile.close();
 				rs.close();
 			}
-			writeToFile.close();
+			
 			pstmt.close();
 			con.close();
 		} catch (Exception e){
@@ -355,7 +375,7 @@ public class StaticToolActions {
 				Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
 				BufferedWriter writeToFile = new BufferedWriter(new FileWriter(Url));
 				con = Utils.connectDatabase();
-				writeToFile.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL");
+				writeToFile.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL");
 				writeToFile.newLine();
 				query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL from " + sch + ".PART_CODE p,cm.XLP_SE_COMPONENT x," + sch + ".CLASSIFICATION_CODE c where p.COM_ID IN (SELECT GET_COM_ID_BY_PN_VEN(PART,MAN) FROM TABLE (CAST ( ? AS PART_MAN_TAB))) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 				pstmt = con.prepareStatement(query);
@@ -373,7 +393,7 @@ public class StaticToolActions {
 				pstmt.setInt(2, id);
 				rs = pstmt.executeQuery();
 				while (rs.next()){
-					writeToFile.write(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : ""));
+					writeToFile.append(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : ""));
 					writeToFile.newLine();
 				}
 				writeToFile.close();
@@ -403,20 +423,22 @@ public class StaticToolActions {
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log);
 			Url = log + "StaticInfoTools\\" + System.currentTimeMillis() + fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
+			writeToFile.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x,importer.CLASSIFICATION_CODE c where p.PL_ID=get_pl_id(?) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
 			for(int row = 1; row < txtDataList.size(); row++){
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try{
 					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
 					pstmt.setString(1, pl);
 					pstmt.setInt(2, id);
 					rs = pstmt.executeQuery();
 					while (rs.next()){
-						writeToFile.write(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : "") + "\t" + ((rs.getString(16) != null) ? rs.getString(16) : ""));
+						writeToFile.append(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : "") + "\t" + ((rs.getString(16) != null) ? rs.getString(16) : ""));
 						writeToFile.newLine();
 //						System.out.println(((rs.getString(1) != null) ? rs.getString(1) : "") + "\t" + ((rs.getString(2) != null) ? rs.getString(2) : "") + "\t" + ((rs.getString(3) != null) ? rs.getString(3) : "") + "\t" + ((rs.getString(4) != null) ? rs.getString(4) : "") + "\t" + ((rs.getString(5) != null) ? rs.getString(5) : "") + "\t" + ((rs.getString(6) != null) ? rs.getString(6) : "") + "\t" + ((rs.getString(7) != null) ? rs.getString(7) : "") + "\t" + ((rs.getString(8) != null) ? rs.getString(8) : "") + "\t" + ((rs.getString(9) != null) ? rs.getString(9) : "") + "\t" + ((rs.getString(10) != null) ? rs.getString(10) : "") + "\t" + ((rs.getString(11) != null) ? rs.getString(11) : "") + "\t" + ((rs.getString(12) != null) ? rs.getString(12) : "") + "\t" + ((rs.getString(13) != null) ? rs.getString(13) : "") + "\t" + ((rs.getString(14) != null) ? rs.getString(14) : "") + "\t" + ((rs.getString(15) != null) ? rs.getString(15) : "") + "\t" + ((rs.getString(16) != null) ? rs.getString(16) : ""));
 					}
@@ -425,8 +447,9 @@ public class StaticToolActions {
 					e.printStackTrace();
 				}
 				rs.close();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			pstmt.close();
 			con.close();
 		} catch (Exception e){

@@ -26,14 +26,14 @@ public class ErrorTool extends ToolBean {
 	}
 
 	public String performAction(ArrayList<ArrayList<String>> list,
-			String function,int classId) {
+			String function,int classId,String fileName) {
 		System.out.println("Error action here");
 		String currentHeader = "";
 		boolean validHeader = false;
 		if (function.equals("Import All")) {
 			errorActions.importAllErrorCode();
 		} else if (function.equals("Import by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier";
+			currentHeader = "Part Number,Supplier";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				errorActions.importByPNSAction("", list, classId);
@@ -57,7 +57,7 @@ public class ErrorTool extends ToolBean {
 				return "the header must be " + currentHeader;
 			}
 		} else if (function.equals("Export All")) {
-			errorActions.exportAllErrorCode();
+			errorActions.exportAllErrorCode(fileName);
 		} else if (function.equals("Export by PN & Supplier")) {
 			currentHeader = "Product Line";
 			validHeader = checkHeader(currentHeader, list.get(0));

@@ -32,10 +32,10 @@ public class ExceptionToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "ExceptionPartsTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log+"Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 			writeToFile
-					.write("Part Number\tSupplier Name\tStatic\tREF_URL\tStatus");
+					.append("Part Number\tSupplier Name\tStatic\tREF_URL\tStatus");
 			writeToFile.newLine();
 			query = "update cm.PART_CODE set STATIC_CLASS=? ,se_class=? , STATIC_REF_URL=? ,ref='Exception', MANUAL_FLAG=1 where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
@@ -67,11 +67,12 @@ public class ExceptionToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pn + "\t" + man + "\t" + staticClass + "\t"
+				writeToFile.append(pn + "\t" + man + "\t" + staticClass + "\t"
 						+ refUrl + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();

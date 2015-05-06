@@ -64,10 +64,11 @@ public class DynamicToolAction
 			String pdfURL = "";
 			String rufUrlId = "";
 
-			writeToFile = new BufferedWriter(new FileWriter(log + "Log.txt"));
+			writeToFile = new BufferedWriter(new FileWriter(fileName ,
+					true));
 
 			writeToFile
-					.write("SE Product Line\tCode Name\tCode Version\tExecution Order(Exit when fired)\tStatus");
+					.append("SE Product Line\tCode Name\tCode Version\tExecution Order(Exit when fired)\tStatus");
 
 			writeToFile.newLine();
 
@@ -84,7 +85,7 @@ public class DynamicToolAction
 			DD: for (ArrayList<String> row : txtDataList)
 
 			{
-
+				writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 				clasId = "";
 				try
 
@@ -179,7 +180,7 @@ public class DynamicToolAction
 								System.out.println("pdf url is " + pdfURL);
 							}
 							if (rufUrlId == null || rufUrlId.equals("")) {
-								writeToFile.write((new StringBuilder(String
+								writeToFile.append((new StringBuilder(String
 										.valueOf(plName))).append("\t")
 										.append(className).append("\t")
 										.append(classVer).append("\t")
@@ -353,13 +354,13 @@ public class DynamicToolAction
 							.executeUpdate("insert into importer.generated_pl(pl_id,status,class_id) values ("
 									+ pl + ",0," + clasId + ")");
 				}
-				writeToFile.write((new StringBuilder(String.valueOf(plName)))
+				writeToFile.append((new StringBuilder(String.valueOf(plName)))
 						.append("\t").append(className).append("\t")
 						.append(classVer).append("\t").append(executionOrd)
 						.append("\t").append(status).toString());
 
 				writeToFile.newLine();
-
+				writeToFile.close();
 			}
 
 			con.commit();
@@ -421,12 +422,6 @@ public class DynamicToolAction
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// DAO.begin();
-		// DAO.getSession().createSQLQuery("delete from importer.rad_rolls").executeUpdate();
-		// DAO.commit();
-		// DAO.close();
-
 		return "Done";
 	}
 
@@ -449,13 +444,12 @@ public class DynamicToolAction
 					.append("DynamicGenRulesTools\\")
 					.append(System.currentTimeMillis()).append(fileName)
 					.append(".txt").toString();
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 
 			con = Utils.connectDatabase();
 			st = con.createStatement();
 			writeToFile
-					.write("SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5");
+					.append("SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5");
 
 			writeToFile.newLine();
 
@@ -469,8 +463,9 @@ public class DynamicToolAction
 				try
 
 				{
+					writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 					plName = ((String) ((List) txtDataList.get(row)).get(0))
-							.trim().replaceAll("\"","");
+							.trim().replaceAll("\"", "");
 
 					className = ((String) ((List) txtDataList.get(row)).get(1))
 							.trim();
@@ -493,7 +488,7 @@ public class DynamicToolAction
 						// writeToFile
 						// .newLine())
 
-						writeToFile.write((new StringBuilder(String
+						writeToFile.append((new StringBuilder(String
 								.valueOf(rSet.getString(1) == null ? ""
 										: ((Object) (rSet.getString(1))))))
 								.append("\t")
@@ -649,7 +644,7 @@ public class DynamicToolAction
 						writeToFile.newLine();
 					}
 					rSet.close();
-
+					writeToFile.close();
 				}
 
 				catch (Exception e)
@@ -661,8 +656,6 @@ public class DynamicToolAction
 					e.printStackTrace();
 
 				}
-
-			writeToFile.close();
 
 			// pstmt.close();
 
@@ -718,13 +711,12 @@ public class DynamicToolAction
 					.append(System.currentTimeMillis()).append(fileName)
 					.append(".txt").toString();
 
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 
 			con = Utils.connectDatabase();
 
 			writeToFile
-					.write("SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5");
+					.append("SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5");
 
 			writeToFile.newLine();
 
@@ -736,12 +728,11 @@ public class DynamicToolAction
 
 			pstmt = con.prepareStatement(query);
 
-			for (int row = 1; row < txtDataList.size(); row++)
-
+			for (int row = 1; row < txtDataList.size(); row++) {
 				try
 
 				{
-
+					writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 					pl = ((String) ((List) txtDataList.get(row)).get(0)).trim()
 							.replaceAll("\"", "");
 
@@ -760,7 +751,7 @@ public class DynamicToolAction
 					for (rSet = pstmt.executeQuery(); rSet.next(); writeToFile
 							.newLine())
 
-						writeToFile.write((new StringBuilder(String
+						writeToFile.append((new StringBuilder(String
 								.valueOf(rSet.getString(1) == null ? ""
 										: ((Object) (rSet.getString(1))))))
 								.append("\t")
@@ -930,8 +921,8 @@ public class DynamicToolAction
 					e.printStackTrace();
 
 				}
-
-			writeToFile.close();
+				writeToFile.close();
+			}
 
 			pstmt.close();
 
@@ -996,10 +987,9 @@ public class DynamicToolAction
 			String executionOrd = "";
 			String clasId = "";
 			String pl = "";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 			writeToFile
-					.write("SE Product Line\tCode Name\tCode Version\tExecution Order(Exit when fired)\tStatus");
+					.append("SE Product Line\tCode Name\tCode Version\tExecution Order(Exit when fired)\tStatus");
 			writeToFile.newLine();
 			queryIns = (new StringBuilder("insert into "))
 					.append(sch)
@@ -1013,7 +1003,9 @@ public class DynamicToolAction
 			pstmtIns = con.prepareStatement(queryIns);
 			pstmtDel = con.prepareStatement(queryDel);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 				try {
+
 					plName = ((String) ((List) txtDataList.get(row)).get(0))
 							.trim().replaceAll("\"", "");
 					className = ((String) ((List) txtDataList.get(row)).get(1))
@@ -1168,13 +1160,14 @@ public class DynamicToolAction
 				// insertStatment
 				// .executeUpdate("insert into importer.generated_pl(pl_id,status) values ("
 				// + pl + ",0)");
-				writeToFile.write((new StringBuilder(String.valueOf(plName)))
+				writeToFile.append((new StringBuilder(String.valueOf(plName)))
 						.append("\t").append(className).append("\t")
 						.append(classVer).append("\t").append(executionOrd)
 						.append("\t").append(status).toString());
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			// writeToFile.close();
 			con.commit();
 			pstmtIns.close();
 			pstmtDel.close();
@@ -1221,16 +1214,15 @@ public class DynamicToolAction
 			String executionOrd = "";
 			String clasId = "";
 			String pl = "";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 			writeToFile
-					.write("SE_PRODUCT_LINE\t CLASS_NAME\t CODE_VERSION\t CODE_DESCRIPTION\t REF_URL\t EXECUTION_ORDER\t CODE\t SE_PARAMETERS_NAME_1\t START_COND_1\t START_VALUE_1\t START_MULTIPLIER_1\t START_UNIT_1\t END_COND_1\t END_VALUE_1\t END_MULTIPLIER_1\t END_UNIT_1\t SE_PARAMETERS_NAME_2\t START_COND_2\t START_VALUE_2\t START_MULTIPLIER_2\t START_UNIT_2\t END_COND_2\t END_VALUE_2\t END_MULTIPLIER_2\t END_UNIT_2\t SE_PARAMETERS_NAME_3\t START_COND_3\t START_VALUE_3\t START_MULTIPLIER_3\t START_UNIT_3\t END_COND_3\t END_VALUE_3\t END_MULTIPLIER_3\t END_UNIT_3\t SE_PARAMETERS_NAME_4\t START_COND_4\t START_VALUE_4\t START_MULTIPLIER_4\t START_UNIT_4\t END_COND_4\t END_VALUE_4\t END_MULTIPLIER_4\t END_UNIT_4\t SE_PARAMETERS_NAME_5\t START_COND_5\t START_VALUE_5\t START_MULTIPLIER_5\t START_UNIT_5\t END_COND_5\t END_VALUE_5\t END_MULTIPLIER_5\t END_UNIT_5\t FEATURE_ID_1\t FEATURE_ID_2\t FEATURE_ID_3\t FEATURE_ID_4\t FEATURE_ID_5\t PL_ID\t CLAS_ID");
+					.append("SE_PRODUCT_LINE\t CLASS_NAME\t CODE_VERSION\t CODE_DESCRIPTION\t REF_URL\t EXECUTION_ORDER\t CODE\t SE_PARAMETERS_NAME_1\t START_COND_1\t START_VALUE_1\t START_MULTIPLIER_1\t START_UNIT_1\t END_COND_1\t END_VALUE_1\t END_MULTIPLIER_1\t END_UNIT_1\t SE_PARAMETERS_NAME_2\t START_COND_2\t START_VALUE_2\t START_MULTIPLIER_2\t START_UNIT_2\t END_COND_2\t END_VALUE_2\t END_MULTIPLIER_2\t END_UNIT_2\t SE_PARAMETERS_NAME_3\t START_COND_3\t START_VALUE_3\t START_MULTIPLIER_3\t START_UNIT_3\t END_COND_3\t END_VALUE_3\t END_MULTIPLIER_3\t END_UNIT_3\t SE_PARAMETERS_NAME_4\t START_COND_4\t START_VALUE_4\t START_MULTIPLIER_4\t START_UNIT_4\t END_COND_4\t END_VALUE_4\t END_MULTIPLIER_4\t END_UNIT_4\t SE_PARAMETERS_NAME_5\t START_COND_5\t START_VALUE_5\t START_MULTIPLIER_5\t START_UNIT_5\t END_COND_5\t END_VALUE_5\t END_MULTIPLIER_5\t END_UNIT_5\t FEATURE_ID_1\t FEATURE_ID_2\t FEATURE_ID_3\t FEATURE_ID_4\t FEATURE_ID_5\t PL_ID\t CLAS_ID");
 			writeToFile.newLine();
 
 			// pstmtIns = con.prepareStatement(queryIns);
 			// pstmtDel = con.prepareStatement(queryDel);
 			for (int row = 1; row < txtDataList.size(); row++) {
-
+				writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 				className = ((String) ((List) txtDataList.get(row)).get(0))
 						.trim();
 				classVer = ((String) ((List) txtDataList.get(row)).get(1))
@@ -1246,13 +1238,13 @@ public class DynamicToolAction
 						line += rs.getString(c) + "\t";
 					}
 					line += "\n";
-					writeToFile.write(line);
+					writeToFile.append(line);
 				}
 				rs.close();
 				st.close();
-
+				writeToFile.close();
 			}
-			writeToFile.close();
+
 			con.close();
 		}
 
@@ -1298,12 +1290,11 @@ public class DynamicToolAction
 					.append(System.currentTimeMillis()).append(fileName)
 					.append(".txt").toString();
 
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 
 			con = Utils.connectDatabase();
 
-			writeToFile.write("Class Name\tCode Version\tStatus");
+			writeToFile.append("Class Name\tCode Version\tStatus");
 
 			writeToFile.newLine();
 
@@ -1313,6 +1304,8 @@ public class DynamicToolAction
 
 			for (int row = 1; row < txtDataList.size(); row++)
 
+			{
+				writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 				try
 
 				{
@@ -1330,7 +1323,8 @@ public class DynamicToolAction
 					// insertStatment
 					// .executeUpdate("insert into importer.generated_pl(pl_id,status) values ("
 					// + pl + ",0)");
-					writeToFile.write(className + "\t" + codeVer + "\tDeleted");
+					writeToFile
+							.append(className + "\t" + codeVer + "\tDeleted");
 					writeToFile.newLine();
 
 				}
@@ -1344,8 +1338,8 @@ public class DynamicToolAction
 					e.printStackTrace();
 
 				}
-
-			writeToFile.close();
+				writeToFile.close();
+			}
 
 			pstmt.close();
 
@@ -1415,12 +1409,11 @@ public class DynamicToolAction
 					.append(System.currentTimeMillis()).append(fileName)
 					.append(".txt").toString();
 
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 
 			con = Utils.connectDatabase();
 
-			writeToFile.write("Product Line\tStatus");
+			writeToFile.append("Product Line\tStatus");
 
 			writeToFile.newLine();
 
@@ -1428,6 +1421,7 @@ public class DynamicToolAction
 			insertStatment = con.createStatement();
 			selectStatment = con.createStatement();
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName, true));
 				codeId = null;
 				try
 
@@ -1465,7 +1459,7 @@ public class DynamicToolAction
 					insertStatment
 							.executeUpdate("insert into importer.generated_pl(pl_id,status,CLASS_ID) values (cm.get_pl_id('"
 									+ pl + "'),0," + codeId + ")");
-					writeToFile.write(pl + "\tDeleted");
+					writeToFile.append(pl + "\tDeleted");
 					writeToFile.newLine();
 
 					// for (rSet = pstmt.executeQuery(); rSet.next();
@@ -1639,8 +1633,8 @@ public class DynamicToolAction
 					e.printStackTrace();
 
 				}
+				writeToFile.close();
 			}
-			writeToFile.close();
 
 			deleteStatment.close();
 			insertStatment.close();

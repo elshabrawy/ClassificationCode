@@ -2,13 +2,14 @@ package com.se.tools;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.faces.bean.ManagedBean;
 
@@ -43,22 +44,21 @@ public class SupplierToolActions {
 		PreparedStatement pstmt2 = null;
 		HashMap<String, Integer> classIds = null;
 		try {
-			String pn = "", man = "", supplierClass = "", newSupplierClass = "", oldSupplierClass = "", refUrl = "", className = "", classVer = "",partNumber;
-			
-			int id, comId = -1;
-			long pdfId = -1;
+			String pn = "", man = "", supplierClass = "", newSupplierClass = "", oldSupplierClass = "", refUrl = "", className = "", classVer = "", partNumber;
+
+			Integer id=-1;
+					int comId = -1;
+			String runUrlId = "";
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log);
-			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
-					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			Url = log + "SupplierInfoTools\\" +  fileName +System.currentTimeMillis()+ ".txt";
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 
 			writeToFile
-					.write("Old Part Number\tNew Part Number\tSupplier Name\tClass Name\tClass Version\tSupplier\tREF_URL\tStatus");
+					.append("Old Part Number\tNew Part Number\tSupplier Name\tClass Name\tClass Version\tSupplier\tREF_URL\tStatus");
 			writeToFile.newLine();
-
+			writeToFile.close();
 			classIds = getClassIDs(con);
 
 			updateQuery1 = "update cm.PART_CODE set SUP_REF_URL=? , SUP_REF_URL_ID = ?, reason='SUP_REF_URL Change', MODIFY_DATE = sysdate where COM_ID=? and CLAS_ID=?";
@@ -67,46 +67,75 @@ public class SupplierToolActions {
 			pstmt1 = con.prepareStatement(updateQuery1);
 			pstmt2 = con.prepareStatement(updateQuery2);
 			String comPart = "";
+			String seValue = "";
 			DD: for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
+					
+					seValue="";
 					comPart = "";
 					comId = -1;
-					pdfId = -1;
-					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
-					partNumber=pn.replaceAll("'", "''");
-					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
-					className = txtDataList.get(row).get(2).trim();
-					classVer = txtDataList.get(row).get(3).trim();
-					supplierClass = txtDataList.get(row).get(4).trim();
+					runUrlId = "";
+					pn = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					partNumber = pn.replaceAll("'", "''");
+					man = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");
+					className = txtDataList.get(row).get(2).trim().replaceAll("\"", "");;
+					classVer = txtDataList.get(row).get(3).trim().replaceAll("\"", "");;
+					supplierClass = txtDataList.get(row).get(4).trim().replaceAll("\"", "");
 					newSupplierClass = supplierClass.replaceAll(
-							"[\\.\\/\\-\\_\\%\\±\\~\\!\\@\\$\\*\\:\\;]", "");
+							"[\\.\\/\\-\\(\\)\\_\\%\\{\\}\\±\\~\\!\\@\\$\\*\\:\\;\\,\\'\\?\\^\\&\\`\\s]", "").replaceAll("\"", "");
 					refUrl = txtDataList.get(row).get(5).trim();
 
 					id = classIds.get(className + "}" + classVer);
-
-					// check classId
-					if (id == -1) {
-						writeToFile.write(pn + "\t\t" + man + "\t" + className
+					if (id == null) {
+						writeToFile.append(pn + "\t\t" + man + "\t" + className
 								+ "\t" + classVer + "\t" + supplierClass + "\t"
 								+ refUrl + "\t" + "Not Enabled Class ID");
 						writeToFile.newLine();
+						writeToFile.close();
 						continue DD;
 					}
+					st = con.createStatement();
+					rs = st.executeQuery("SELECT  SE_VALUE FROM importer.CLASSIFICATION_CODE_LOOKUP where lower(LOOKUP_VALUE) =lower('"
+							+ newSupplierClass + "') and class_id=" + id);
+					if (rs.next()) {
+						seValue = rs.getString(1);
+					}
+					rs.close();
+					st.close();
+					if (seValue == null || seValue.equals("")) {
+						writeToFile.append(pn + "\t\t" + man + "\t" + className
+								+ "\t" + classVer + "\t" + supplierClass + "\t"
+								+ refUrl + "\t"
+								+ "Error in Supplier Code Value");
+						writeToFile.newLine();
+						writeToFile.close();
+						continue DD;
+					}
+					// check classId
 
 					// check pn & vendor in xlp_se_component table
 					query = "select com_id from cm.xlp_se_component where COM_PARTNUM ='"
-							+ partNumber + "' and man_id=cm.get_man_id('" + man + "')";
+							+ partNumber
+							+ "' and man_id=cm.get_man_id('"
+							+ man
+							+ "')";
 					try {
 						st = con.createStatement();
 						rs = st.executeQuery(query);
 						if (rs.next()) {
 							comId = rs.getInt(1);
 						}
+						rs.close();
+						st.close();
 						if (comId == -1) {
 							query = "select com_id,COM_PARTNUM  from cm.xlp_se_component where NAN_PARTNUM =cm.NONALPHANUM('"
 									+ partNumber
 									+ "') and man_id=cm.get_man_id('"
-									+ man + "')";
+									+ man
+									+ "')";
 
 							st = con.createStatement();
 							rs = st.executeQuery(query);
@@ -114,12 +143,15 @@ public class SupplierToolActions {
 								comId = rs.getInt(1);
 								comPart = rs.getString(2);
 							}
+							rs.close();
+							st.close();
 							if (comId == -1) {
-								writeToFile.write(pn + "\t\t" + man + "\t"
+								writeToFile.append(pn + "\t\t" + man + "\t"
 										+ className + "\t" + classVer + "\t"
 										+ supplierClass + "\t" + refUrl + "\t"
 										+ "Not SE Part");
 								writeToFile.newLine();
+								writeToFile.close();
 								continue DD;
 							}
 						}
@@ -140,13 +172,7 @@ public class SupplierToolActions {
 							oldSupplierClass = (rs.getString(1) == null) ? ""
 									: rs.getString(1);
 						}
-						// if(oldSupplierClass==null){
-						// writeToFile.write(pn + "\t" + man + "\t" + className
-						// +"\t"+ classVer +"\t"+ supplierClass + "\t" + refUrl
-						// + "\t" + "Not Found in Part_Code");
-						// writeToFile.newLine();
-						// continue DD;
-						// }
+					
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					} finally {
@@ -162,15 +188,17 @@ public class SupplierToolActions {
 							// refUrl =
 							// rs.getString("pdf");//==null)?null:rs.getLong("pdf");
 							System.out.println("pdf url is " + refUrl);
-							pdfId = rs.getLong("pdf");
+							runUrlId = rs.getString("pdf");
 						}
 						st.close();
 						rs.close();
-						if (pdfId == -1 || pdfId==0) {
-							writeToFile.write(pn + "\t" + comPart + "\t" + man
-									+ "\t" + className + "\t" + classVer + "\t" + supplierClass + "\t" + refUrl
-									+ "\t" + "Please Insert Offline");
+						if (runUrlId == null ||runUrlId.equals("")|| runUrlId.equals("0")) {
+							writeToFile.append(pn + "\t" + comPart + "\t" + man
+									+ "\t" + className + "\t" + classVer + "\t"
+									+ supplierClass + "\t" + refUrl + "\t"
+									+ "Please Insert Offline");
 							writeToFile.newLine();
+							writeToFile.close();
 							continue DD;
 						}
 					}
@@ -182,11 +210,9 @@ public class SupplierToolActions {
 
 					// check new supplier code with the old one
 					// if same, update sup_ref_url and id
-					if (newSupplierClass.toLowerCase().equals(
-							oldSupplierClass.replaceAll(
-									"[\\.\\/\\-\\_\\%\\±\\~\\!\\@\\$\\*\\:\\;]", "").toLowerCase())) {
+					if (seValue.equals(oldSupplierClass)) {
 						pstmt1.setString(1, refUrl);
-						pstmt1.setLong(2, pdfId);
+						pstmt1.setString(2, runUrlId);
 						pstmt1.setInt(3, comId);
 						pstmt1.setInt(4, id);
 						int count = pstmt1.executeUpdate();
@@ -197,10 +223,10 @@ public class SupplierToolActions {
 						}
 					}
 					// if not same update the supplier code
-					else if (!supplierClass.equalsIgnoreCase("")) {
-						pstmt2.setString(1, supplierClass);
+					else if (!seValue.equalsIgnoreCase("")) {
+						pstmt2.setString(1, seValue);
 						pstmt2.setString(2, refUrl);
-						pstmt2.setLong(3, pdfId);
+						pstmt2.setString(3, runUrlId);
 						pstmt2.setInt(4, comId);
 						pstmt2.setInt(5, id);
 						int count = pstmt2.executeUpdate();
@@ -221,12 +247,13 @@ public class SupplierToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pn + "\t" + comPart + "\t" + man + "\t"
+				writeToFile.append(pn + "\t" + comPart + "\t" + man + "\t"
 						+ className + "\t" + classVer + "\t" + supplierClass
 						+ "\t" + refUrl + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt1.close();
 			pstmt2.close();
@@ -257,19 +284,23 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 			writeToFile
-					.write("Product Line\tSupplier Name\tSupplier\tREF_URL\tStatus");
+					.append("Product Line\tSupplier Name\tSupplier\tREF_URL\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE p set SUPPLIER_CLASS=? , SUP_REF_URL=? ,sup_ref_url_id=?, reason='Supplier Code Change' where EXISTS (SELECT com_id FROM cm.xlp_se_component x WHERE x.PL_ID=get_pl_id(?) and x.man_id = get_man_id(?) and x.COM_ID=p.COM_ID) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
 			String runUrlId = "";
 			DD: for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
-					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
+					runUrlId = "";
+					pl = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					man = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");
 					supplierClass = txtDataList.get(row).get(2).trim();
 					refUrl = txtDataList.get(row).get(3).trim();
 					if (!refUrl.equals("")) {
@@ -280,11 +311,12 @@ public class SupplierToolActions {
 							runUrlId = rs.getString("pdf");// ==null)?null:rs.getString("pdf").toString();
 							System.out.println("pdf url is " + refUrl);
 						}
-						if (runUrlId == null || runUrlId.equals("")) {
-							writeToFile.write(pl + "\t" + man + "\t"
+						if (runUrlId == null ||runUrlId.equals("")|| runUrlId.equals("0")) {
+							writeToFile.append(pl + "\t" + man + "\t"
 									+ supplierClass + "\t" + refUrl + "\t"
 									+ "Please Insert Offline");
 							writeToFile.newLine();
+							writeToFile.close();
 							continue DD;
 						}
 					}
@@ -309,12 +341,13 @@ public class SupplierToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pl + "\t" + man + "\t" + supplierClass + "\t"
+				writeToFile.append(pl + "\t" + man + "\t" + supplierClass + "\t"
 						+ refUrl + "\t" + status);
 				writeToFile.newLine();
 				runUrlId = null;
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -345,17 +378,20 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Part Number\tSupplier Name\tStatus");
+			writeToFile.append("Part Number\tSupplier Name\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE set SUPPLIER_CLASS=null , SUP_REF_URL=null ,sup_ref_url_id=null, reason='Supplier Code Change' where COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
-					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
+					pn = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					man = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");
 					pstmt.setString(1, pn);
 					pstmt.setString(2, man);
 					pstmt.setInt(3, id);
@@ -370,10 +406,11 @@ public class SupplierToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pn + "\t" + man + "\t" + status);
+				writeToFile.append(pn + "\t" + man + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+		
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -400,23 +437,26 @@ public class SupplierToolActions {
 		PreparedStatement pstmt = null;
 		Statement st = null;
 		ResultSet rs = null;
-		Long runUrlId = null;
+		String runUrlId = "";
 		try {
+			runUrlId="";
 			String man = "", staticClass = "", refUrl = "";
 			@SuppressWarnings("unused")
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Supplier Name\tSupplier\tREF_URL\tStatus");
+			writeToFile.append("Supplier Name\tSupplier\tREF_URL\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE p set SUPPLIER_CLASS=? ,sup_ref_url_id=?, reason='Supplier Code Change', SUP_REF_URL=? where EXISTS (SELECT com_id FROM cm.xlp_se_component x WHERE x.man_id = get_man_id(?) and x.COM_ID=p.COM_ID) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
 			DD: for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					man = txtDataList.get(row).get(0).trim().replaceAll("\"", "");
+					man = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
 					staticClass = txtDataList.get(row).get(1).trim();
 					refUrl = txtDataList.get(row).get(2).trim();
 					if (!refUrl.equals("")) {
@@ -424,13 +464,14 @@ public class SupplierToolActions {
 						rs = st.executeQuery("select importer.GET_PDF_ID_By_URL('"
 								+ refUrl + "') pdf from dual");
 						while (rs.next()) {
-							runUrlId = rs.getLong("pdf");// ==null)?null:rs.getString("pdf").toString();
+							runUrlId = rs.getString("pdf");// ==null)?null:rs.getString("pdf").toString();
 							System.out.println("pdf url is " + refUrl);
 						}
-						if (runUrlId == null || runUrlId.equals("")) {
-							writeToFile.write(man + "\t" + staticClass + "\t"
+						if (runUrlId == null ||runUrlId.equals("")|| runUrlId.equals("0")) {
+							writeToFile.append(man + "\t" + staticClass + "\t"
 									+ refUrl + "\t" + "Please Insert Offline");
 							writeToFile.newLine();
+							writeToFile.close();
 							continue DD;
 						}
 					}
@@ -439,7 +480,7 @@ public class SupplierToolActions {
 						pstmt.setString(3, refUrl);
 						pstmt.setString(4, man);
 						pstmt.setInt(5, id);
-						pstmt.setLong(2, runUrlId);
+						pstmt.setString(2, runUrlId);
 						int count = pstmt.executeUpdate();
 						gen.runTruthByMan(man, id);
 						if (count > 0)
@@ -454,12 +495,13 @@ public class SupplierToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(man + "\t" + staticClass + "\t" + refUrl
+				writeToFile.append(man + "\t" + staticClass + "\t" + refUrl
 						+ "\t" + status);
 				writeToFile.newLine();
-				runUrlId = null;
+				writeToFile.close();
+//				runUrlId = -1;
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -490,16 +532,18 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Supplier Name\tStatus");
+			writeToFile.append("Supplier Name\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE p set SUPPLIER_CLASS=null , reason='Supplier Code Change' , SUP_REF_URL=null,SUP_REF_URL_id=null where EXISTS (SELECT com_id FROM  cm.xlp_se_component x WHERE x.man_id = cm.get_man_id(?) and x.COM_ID=p.COM_ID) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					man = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					man = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
 					pstmt.setString(1, man);
 					pstmt.setInt(2, id);
 					int count = pstmt.executeUpdate();
@@ -513,10 +557,11 @@ public class SupplierToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(man + "\t" + status);
+				writeToFile.append(man + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -547,24 +592,27 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 			writeToFile
-					.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
+					.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x,importer.CLASSIFICATION_CODE c where p.COM_ID=cm.GET_COM_ID(?,CM.GET_MAN_ID(?)) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					pn = txtDataList.get(row).get(0).trim().replaceAll("\"","");
-					man = txtDataList.get(row).get(1).trim().replaceAll("\"","");
+					pn = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					man = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");
 					pstmt.setString(1, pn);
 					pstmt.setString(2, man);
 					pstmt.setInt(3, id);
 					rs = pstmt.executeQuery();
 					while (rs.next()) {
-						writeToFile.write(((rs.getString(1) != null) ? rs
+						writeToFile.append(((rs.getString(1) != null) ? rs
 								.getString(1) : "")
 								+ "\t"
 								+ ((rs.getString(2) != null) ? rs.getString(2)
@@ -612,6 +660,7 @@ public class SupplierToolActions {
 								+ ((rs.getString(16) != null) ? rs
 										.getString(16) : ""));
 						writeToFile.newLine();
+						writeToFile.close();
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -619,7 +668,7 @@ public class SupplierToolActions {
 				}
 				rs.close();
 			}
-			writeToFile.close();
+			
 			pstmt.close();
 			con.close();
 		} catch (Exception e) {
@@ -651,24 +700,27 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 			writeToFile
-					.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
+					.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x, importer.CLASSIFICATION_CODE c where x.pl_id=cm.get_pl_id(?) and x.man_id=cm.get_man_id(?) and p.CLAS_ID=? and p.COM_ID=x.COM_ID and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				 writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					PL = txtDataList.get(row).get(0).trim().replaceAll("\"","");
-					supp = txtDataList.get(row).get(1).trim().replaceAll("\"","");
+					PL = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					supp = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");
 					pstmt.setString(1, PL);
 					pstmt.setString(2, supp);
 					pstmt.setInt(3, id);
 					rs = pstmt.executeQuery();
 					while (rs.next()) {
-						writeToFile.write(((rs.getString(1) != null) ? rs
+						writeToFile.append(((rs.getString(1) != null) ? rs
 								.getString(1) : "")
 								+ "\t"
 								+ ((rs.getString(2) != null) ? rs.getString(2)
@@ -721,8 +773,9 @@ public class SupplierToolActions {
 					e.printStackTrace();
 				}
 				rs.close();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			pstmt.close();
 			con.close();
 		} catch (Exception e) {
@@ -750,16 +803,18 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
-			writeToFile.write("Supplier Name\tStatus");
+			writeToFile.append("Supplier Name\tStatus");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "update cm.PART_CODE p set SUPPLIER_CLASS=null , reason='Supplier Code Change' ,SUP_REF_URL=null,SUP_REF_URL_id=null where EXISTS (SELECT com_id FROM  cm.xlp_se_component x WHERE x.pl_id = cm.get_pl_id(?) and x.COM_ID=p.COM_ID) and CLAS_ID=?";
 			pstmt = con.prepareStatement(query);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					pl = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					pl = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
 					pstmt.setString(1, pl);
 					pstmt.setInt(2, id);
 					int count = pstmt.executeUpdate();
@@ -772,10 +827,11 @@ public class SupplierToolActions {
 					e.printStackTrace();
 					status = e.getMessage();
 				}
-				writeToFile.write(pl + "\t" + status);
+				writeToFile.append(pl + "\t" + status);
 				writeToFile.newLine();
+				writeToFile.close();
 			}
-			writeToFile.close();
+			
 			con.commit();
 			pstmt.close();
 			con.close();
@@ -804,22 +860,24 @@ public class SupplierToolActions {
 			String directory = Utils.createDirector(log);
 			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
 					+ fileName + ".txt";
-			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(log
-					+ "Log.txt"));
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 			con = Utils.connectDatabase();
 			writeToFile
-					.write("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
+					.append("Product Line\tPart Number\tSupplier\tCode Name\tCode Version\tDYN_CLASS\tSTATIC_CLASS\tSUPPLIER_CLASS\tSE_CLASS\tREF\tREF_URL\tCONF_CLASS_LVL\tMANUAL_FLAG\tSUP_REF_URL\tSTATIC_REF_URL\tModify Date");
 			writeToFile.newLine();
+			writeToFile.close();
 			query = "select get_pl_name(p.PL_ID), x.COM_PARTNUM, get_man_name(x.MAN_ID), c.CLAS_NAME, c.CLAS_VER, p.DYN_CLASS, p.STATIC_CLASS, p.SUPPLIER_CLASS, p.SE_CLASS, p.REF, p.REF_URL, p.CONF_CLASS_LVL, p.MANUAL_FLAG, p.SUP_REF_URL, p.STATIC_REF_URL, p.MODIFY_DATE from cm.PART_CODE p,cm.XLP_SE_COMPONENT x,importer.CLASSIFICATION_CODE c where x.man_id = get_man_id(?) and x.COM_ID=p.COM_ID and p.CLAS_ID=? and p.CLAS_ID=c.CLAS_ID";
 			pstmt = con.prepareStatement(query);
 			for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
 				try {
-					supp = txtDataList.get(row).get(0).trim().replaceAll("\"","");
+					supp = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
 					pstmt.setString(1, supp);
 					pstmt.setInt(2, id);
 					rs = pstmt.executeQuery();
 					while (rs.next()) {
-						writeToFile.write(((rs.getString(1) != null) ? rs
+						writeToFile.append(((rs.getString(1) != null) ? rs
 								.getString(1) : "")
 								+ "\t"
 								+ ((rs.getString(2) != null) ? rs.getString(2)
@@ -867,13 +925,14 @@ public class SupplierToolActions {
 								+ ((rs.getString(16) != null) ? rs
 										.getString(16) : ""));
 						writeToFile.newLine();
+						writeToFile.close();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				rs.close();
 			}
-			writeToFile.close();
+			
 			pstmt.close();
 			con.close();
 		} catch (Exception e) {
@@ -919,5 +978,249 @@ public class SupplierToolActions {
 			}
 		}
 		return classes;
+	}
+
+	public String updateLookupValues(String fileName,
+			ArrayList<ArrayList<String>> txtDataList) {
+		String status = "";
+		Statement st = null;
+		ResultSet rs = null;
+		String Url = "";
+		String insertQuery = "";
+		String updateQuery = "";
+		Connection con = null;
+		HashMap<String, Integer> classIds = null;
+		try {
+			int id;
+			String codeName = "", codeVersion = "", lookupCode = "", seCode = "", className = "", classVer = "", partNumber;
+			String directory = Utils.createDirector(log);
+			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
+					+ fileName + ".txt";
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
+			con = Utils.connectDatabase();
+
+			writeToFile
+					.append("Class Name\tClass Version\tLookup Code\tSE Code\tStatus");
+			writeToFile.newLine();
+			writeToFile.close();
+			classIds = getClassIDs(con);
+
+			String seValue = "";
+			DD: for (int row = 1; row < txtDataList.size(); row++) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
+				try {
+					seValue="";
+					codeName = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					codeVersion = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");
+					lookupCode = txtDataList.get(row).get(2).trim();
+					seCode = txtDataList.get(row).get(3).trim();
+
+					id = classIds.get(codeName + "}" + codeVersion);
+					if (id == -1) {
+						writeToFile.append(codeName + "\t" + codeVersion
+								+ "\t" + lookupCode + "\t" + seCode + "\t"
+								+ "Not Enabled Class ID");
+						writeToFile.newLine();
+						writeToFile.close();
+						continue DD;
+					}
+					st = con.createStatement();
+					rs = st.executeQuery("SELECT  SE_VALUE FROM importer.CLASSIFICATION_CODE_LOOKUP where lower(LOOKUP_VALUE) =lower('"
+							+ lookupCode + "') and class_id=" + id);
+					if (rs.next()) {
+						seValue = rs.getString(1);
+					}
+					rs.close();
+					st.close();
+					if (seValue == null || seValue.equals("")) {
+						// insert
+						st = con.createStatement();
+
+						insertQuery = "insert into importer.CLASSIFICATION_CODE_LOOKUP (CLASS_ID,LOOKUP_VALUE,SE_VALUE)values ('"
+								+ id
+								+ "','"
+								+ lookupCode
+								+ "','"
+								+ seCode
+								+ "')";
+						st.executeUpdate(insertQuery);
+
+						st.close();
+						writeToFile.append(codeName + "\t" + codeVersion
+								+ "\t" + lookupCode + "\t" + seCode + "\t"
+								+ "Inserted");
+						writeToFile.newLine();
+					} else {
+						// update
+						st = con.createStatement();
+						updateQuery = "update importer.CLASSIFICATION_CODE_LOOKUP set SE_VALUE ='"
+								+ seCode
+								+ "' where CLASS_ID='"
+								+ id
+								+ "' and se_value= '"+seValue+"'";
+						st.executeUpdate(updateQuery);
+						st.close();
+						writeToFile.append(codeName + "\t" + codeVersion
+								+ "\t" + lookupCode + "\t" + seCode + "\t"
+								+ "Updated");
+						writeToFile.newLine();
+						writeToFile.close();
+					}
+
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					status = e.getMessage();
+				}
+				
+			}
+			
+			con.commit();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				con.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return Url;
+	}
+
+	public String exportLookupValues(int id,String fileName) {
+		Statement st = null;
+		ResultSet rs = null;
+		String Url = "";
+		String selectQuery = "";
+		Connection con = null;
+		BufferedWriter writeToFile = null;
+		HashMap<String, Integer> classIds = null;
+		try {
+
+			String codeName = "", codeVersion = "", lookupCode = "", seCode = "";
+			String directory = Utils.createDirector(log);
+			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
+					+ ".txt";
+			writeToFile = new BufferedWriter(new FileWriter(fileName,true));
+			con = Utils.connectDatabase();
+
+			writeToFile.append("Lookup Code\tSE Code");
+			writeToFile.newLine();
+			writeToFile.close();
+			classIds = getClassIDs(con);
+
+			selectQuery = "SELECT  LOOKUP_VALUE,SE_VALUE FROM importer.CLASSIFICATION_CODE_LOOKUP where class_id="
+					+ id;
+
+			System.out.println("Q: " + selectQuery);
+			st = con.createStatement();
+			rs = st.executeQuery(selectQuery);
+			while (rs.next()) {
+				writeToFile = new BufferedWriter(new FileWriter(fileName,true));
+				writeToFile.append(rs.getString(1) + "\t" + rs.getString(2));
+				writeToFile.newLine();
+				writeToFile.close();
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return Url;
+	}
+	
+	public String deleteLookupValues(String fileName,
+			ArrayList<ArrayList<String>> txtDataList) {
+		String status = "";
+		Statement st = null;
+		ResultSet rs = null;
+		String Url = "";
+		String deleteQuery = "";
+		Connection con = null;
+		HashMap<String, Integer> classIds = null;
+		try {
+			int id;
+			String codeName = "", codeVersion = "",  seCode = "", className = "", classVer = "", partNumber;
+			String directory = Utils.createDirector(log);
+			Url = log + "SupplierInfoTools\\" + System.currentTimeMillis()
+					+ fileName + ".txt";
+			BufferedWriter writeToFile = new BufferedWriter(new FileWriter(fileName,true));
+			con = Utils.connectDatabase();
+
+			writeToFile
+					.append("Class Name\tClass Version\tSE Code\tStatus");
+			writeToFile.newLine();
+			writeToFile.close();
+			classIds = getClassIDs(con);
+
+			String seValue = "";
+			DD: for (int row = 1; row < txtDataList.size(); row++) {
+				 writeToFile = new BufferedWriter(new FileWriter(fileName,true));
+				try {
+					seValue="";
+					codeName = txtDataList.get(row).get(0).trim()
+							.replaceAll("\"", "");
+					codeVersion = txtDataList.get(row).get(1).trim()
+							.replaceAll("\"", "");					
+					seCode = txtDataList.get(row).get(2).trim();
+
+					id = classIds.get(codeName + "}" + codeVersion);
+					if (id == -1) {
+						writeToFile.append(codeName + "\t" + codeVersion
+								+ "\t"  + seCode + "\t"
+								+ "Not Enabled Class ID");
+						writeToFile.newLine();
+						writeToFile.close();
+						continue DD;
+					}
+					st = con.createStatement();
+					rs = st.executeQuery("SELECT  SE_VALUE FROM importer.CLASSIFICATION_CODE_LOOKUP where SE_VALUE ='"
+							+ seCode + "' and class_id=" + id);
+					if (rs.next()) {
+						seValue = rs.getString(1);
+					}
+					rs.close();
+					st.close();
+					if (seValue == null || seValue.equals("")) {
+						writeToFile.append(codeName + "\t" + codeVersion
+								+ "\t" + seCode + "\t"
+								+ "Not Found");
+						writeToFile.newLine();
+					} else {
+						// update
+						st = con.createStatement();
+						deleteQuery = "delete from importer.CLASSIFICATION_CODE_LOOKUP where SE_VALUE ='"
+								+ seCode
+								+ "' and CLASS_ID='"
+								+ id+ "' ";
+						st.executeUpdate(deleteQuery);
+						writeToFile.append(codeName + "\t" + codeVersion
+								+ "\t" +seCode + "\t"
+								+ "Deleted");
+						writeToFile.newLine();
+						
+					}
+					writeToFile.close();
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					status = e.getMessage();
+				}
+				
+			}
+			
+			con.commit();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				con.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return Url;
 	}
 }

@@ -20,12 +20,12 @@ public class StaticTool extends ToolBean {
 		this.functions.add("Delete by PL");
 	}
 
-	public String performAction(ArrayList<ArrayList<String>> list,String function,int classId) {
-		System.out.println("Supplier action here");
+	public String performAction(ArrayList<ArrayList<String>> list,String function,int classId,String fileName) {
+		System.out.println("static action here");
 		String currentHeader = "";
 		boolean validHeader = false;
 		if (function.equals("Update by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name\tStatic\tREF_URL";
+			currentHeader = "Part Number,Supplier Name,Static,REF_URL";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.updatePNSAction("filename", list, classId);
@@ -33,7 +33,7 @@ public class StaticTool extends ToolBean {
 				return "the header must be " + currentHeader;
 			}
 		} else if (function.equals("Export by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name";
+			currentHeader = "Part Number,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.exportPNSAction("", list, classId);
@@ -42,7 +42,7 @@ public class StaticTool extends ToolBean {
 			}
 
 		} else if (function.equals("Delete by PN & Supplier")) {
-			currentHeader = "Part Number\tSupplier Name";
+			currentHeader = "Part Number,Supplier Name";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.deletePNSAction("", list, classId);
@@ -51,7 +51,7 @@ public class StaticTool extends ToolBean {
 			}
 
 		} else if (function.equals("Update by PL")) {
-			currentHeader = "Product Line\tStatic\tREF_URL";
+			currentHeader = "Product Line,Static,REF_URL";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
 				staticActions.updatePLAction("filename", list, classId);

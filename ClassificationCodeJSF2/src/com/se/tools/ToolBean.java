@@ -21,7 +21,7 @@ public abstract class ToolBean {
 	ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 
 	public abstract String performAction(ArrayList<ArrayList<String>> list,
-			String function,int classId);
+			String function,int classId,String fileName);
 
 	public ArrayList<ArrayList<String>> getList() {
 		return list;
@@ -52,7 +52,7 @@ public abstract class ToolBean {
 	}
 
 	public boolean checkHeader(String validHeader, ArrayList<String> header) {
-		String[] arr = validHeader.split("\t");
+		String[] arr = validHeader.split("\\,");
 		if (arr.length != header.size()) {
 			return false;
 		}

@@ -3,7 +3,6 @@ package com.se.tools;
 import java.util.ArrayList;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.event.ActionEvent;
 
 @ManagedBean
 public class DynamicTool extends ToolBean {
@@ -22,77 +21,76 @@ public class DynamicTool extends ToolBean {
 	}
 
 	@Override
-	public String performAction(ArrayList<ArrayList<String>> list,String function,int classId) {
+	public String performAction(ArrayList<ArrayList<String>> list,String function,int classId,String fileName) {
 		String currentHeader = "";
 		boolean validHeader = false;
 		System.out.println("Dynamic action here");
 		if (function.equals("Import by PL & Code Name & Code Version")) {
-			currentHeader = "SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5";
+			currentHeader = "SE Product Line,Code Name,Code Version,Code Description,REF_URL,Execution Order(Exit when fired),Code,SE Parameters Name 1,Start Cond1,Start Value1,Start Multiplier1,Start Unit1,End Cond1,End Value1,End Multiplier1,End Unit1,SE Parameters Name 2,Start Cond2,Start Value2,Start Multiplier2,Start Unit2,End Cond2,End Value2,End Multiplier2,End Unit2,SE Parameters Name 3,Start Cond3,Start Value3,Start Multiplier3,Start Unit3,End Cond3,End Value3,End Multiplier3,End Unit3,SE Parameters Name 4,Start Cond4,Start Value4,Start Multiplier4,Start Unit4,End Cond4,End Value4,End Multiplier4,End Unit4,SE Parameters Name 5,Start Cond5,Start Value5,Start Multiplier5,Start Unit5,End Cond5,End Value5,End Multiplier5,End Unit5";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.importRuleAction("", list);
+				actions.importRuleAction(fileName, list);
 			} else {
 				return "the header must be " + currentHeader;
 			}			
 			
 		} else if (function.equals("Export by PL & Code Name & Code Version")) {
-			currentHeader = "Product Line\tCode Name\tCode Version";
+			currentHeader = "Product Line,Code Name,Code Version";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.exportRuleAction("", list);
+				actions.exportRuleAction(fileName, list);
 			} else {
 				return "the header must be " + currentHeader;
 			}	
 			
 		} else if (function.equals(
 				"Delete by PL & Code Name & Code Version")) {
-			currentHeader = "Product Line\tCode Name\tCode Version";
+			currentHeader = "Product Line,Code Name,Code Version";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.deleteRulePLAction("", list);
+				actions.deleteRulePLAction(fileName, list);
 			} else {
 				return "the header must be " + currentHeader;
 			}	
 			
 		} else if (function.equals(
 				"Export by Code Name & Code Version")) {
-			currentHeader = "Code Name\tCode Version";
+			currentHeader = "Code Name,Code Version";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.exportRulePLAction("", list);
+				actions.exportRulePLAction(fileName, list);
 			} else {
 				return "the header must be " + currentHeader;
 			}	
 			
 		} else if (function.equals("Import Rad Hardened Rules")) {
-			currentHeader = "SE Product Line\tCode Name\tCode Version\tCode Description\tREF_URL\tExecution Order(Exit when fired)\tCode\tSE Parameters Name 1\tStart Cond1\tStart Value1\tStart Multiplier1\tStart Unit1\tEnd Cond1\tEnd Value1\tEnd Multiplier1\tEnd Unit1\tSE Parameters Name 2\tStart Cond2\tStart Value2\tStart Multiplier2\tStart Unit2\tEnd Cond2\tEnd Value2\tEnd Multiplier2\tEnd Unit2\tSE Parameters Name 3\tStart Cond3\tStart Value3\tStart Multiplier3\tStart Unit3\tEnd Cond3\tEnd Value3\tEnd Multiplier3\tEnd Unit3\tSE Parameters Name 4\tStart Cond4\tStart Value4\tStart Multiplier4\tStart Unit4\tEnd Cond4\tEnd Value4\tEnd Multiplier4\tEnd Unit4\tSE Parameters Name 5\tStart Cond5\tStart Value5\tStart Multiplier5\tStart Unit5\tEnd Cond5\tEnd Value5\tEnd Multiplier5\tEnd Unit5";
+			currentHeader = "SE Product Line,Code Name,Code Version,Code Description,REF_URL,Execution Order(Exit when fired),Code,SE Parameters Name 1,Start Cond1,Start Value1,Start Multiplier1,Start Unit1,End Cond1,End Value1,End Multiplier1,End Unit1,SE Parameters Name 2,Start Cond2,Start Value2,Start Multiplier2,Start Unit2,End Cond2,End Value2,End Multiplier2,End Unit2,SE Parameters Name 3,Start Cond3,Start Value3,Start Multiplier3,Start Unit3,End Cond3,End Value3,End Multiplier3,End Unit3,SE Parameters Name 4,Start Cond4,Start Value4,Start Multiplier4,Start Unit4,End Cond4,End Value4,End Multiplier4,End Unit4,SE Parameters Name 5,Start Cond5,Start Value5,Start Multiplier5,Start Unit5,End Cond5,End Value5,End Multiplier5,End Unit5";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.importRadRuleAction("", list);
+				actions.importRadRuleAction(fileName, list);
 			} else {
 				return "the header must be " + currentHeader;
 			}	
 			
 		} else if (function.equals("Export Rad Hardened Rules")) {
-			currentHeader = "Code Name\tCode Version";
+			currentHeader = "Code Name,Code Version";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.exportRadRuleAction("", list);
+				actions.exportRadRuleAction(fileName, list);
 			} else {
 				return "the header must be " + currentHeader;
 			}	
 			
 		} else if (function.equals("Delete Rad Hardened Rules")) {
-			currentHeader = "Code Name\tCode Version";
+			currentHeader = "Code Name,Code Version";
 			validHeader = checkHeader(currentHeader, list.get(0));
 			if (validHeader) {
-				actions.deleteRadRuleAction("", list);
+				actions.deleteRadRuleAction(fileName, list);
 				} else {
 				return "the header must be " + currentHeader;
 			}	
 			
 		}
-//		MainWindowBean.downloadController();
 		return "The Process Done";
 	}
 }
